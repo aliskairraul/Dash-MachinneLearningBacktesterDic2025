@@ -1,0 +1,435 @@
+:root {
+    --primary-color: #212C39;
+    --accent-color: #313F4D;
+    --background-color: #8F9BA3;
+    --secondary-color: #719CC6;
+    --head-tables: #374352;
+    --color-up: #79CA7C;
+    --color-down: #FF0000;
+    --text-blue: #5A92C2;
+    --text-black: black;
+    --text-white: white;
+    --background-disabled: #656565;
+    --border: #374352;
+    --eurusd-color: #6ED180;
+    /* RGB(110, 209, 128) */
+    /* --btcusd-color: #8B522E; */
+    /* RGB(139, 82, 46) */
+    --btcusd-color: #ff8c00;
+    /* RGB(255, 140, 0) */
+    /* --xauusd-color: #D1CD3E; */
+    /* RGB(209, 205, 62) */
+    --xauusd-color: #fffa5c;
+    --spx-color: #54A6DC;
+    /* RGB(84, 166, 220) */
+    --sklearn-color: #2e8b57;
+    /* RGB(46, 139, 87) */
+    --lightgbm-color: #ff8c00;
+    /* RGB(255, 140, 0) */
+    --xgboost-color: #4169e1;
+    /* RGB(65, 105, 225) */
+    --pytorch-color: #3A0603;
+    /* RGB(58, 6, 3) */
+    --tensorflow-color: #ab63fa;
+    /* RGB(171, 99, 250) */
+}
+
+/* Posible color 344745  6c938f 465f5d  202c2b  Gris-4c5759   344643   */
+/* Paleta Original f8efd9  79b4b7  344643*/
+
+body {
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding-top: 1em;
+}
+
+#area-app {
+    width: 80vw;
+    height: 97vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ***************************************************    Area Encabezado */
+#area-encabezado {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    /* height: 8%; */
+    background-color: var(--primary-color);
+    border: 0.05em solid var(--border);
+    border-radius: 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#titulo-encabezado {
+    flex: 1;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 1em;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#area-drop {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 1em;
+}
+
+#placeholder-drop-dow {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+#placeholder {
+    flex: 1;
+    font-size: 1.2em;
+    text-align: end;
+}
+
+#drop-down {
+    flex: 1;
+}
+
+/* ***************************************************    Area Radioitems */
+#area-fechas-radioitems {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-top: 1em;
+}
+
+#area-fechas {
+    padding-left: 1em;
+    flex: 2;
+    display: flex;
+    flex-direction: row;
+    gap: 0.1em;
+    /* justify-content:space-between; */
+    /* background-color: var(--primary-color); */
+}
+
+#radioitems {
+    flex: 5;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Custom Radio Items Styles   CUSTOMIZACION DEL COMPONENTE DASH COMO TAL */
+.my-radio-items {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.my-radio-items label {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    /* Prevent text wrapping */
+    cursor: pointer;
+}
+
+.my-radio-items input[type="radio"] {
+    accent-color: #212C39;
+    /* Custom selection color */
+    margin-right: 0.5em;
+    transform: scale(1.2);
+    /* Slightly larger clickable area */
+}
+
+/* *****************************************  Area Fechas  ***********************************/
+#fecha-inicio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border-radius: 0.5em 0 0 0.5em;
+    width: 8.5em;
+    height: 2.5em;
+    padding: 0 1em;
+}
+
+#fecha-fin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border-radius: 0 0.5em 0.5em 0;
+    width: 8.5em;
+    height: 2.5em;
+    padding: 0 1em;
+}
+
+#fecha-inicio .DateInput,
+#fecha-inicio .DateInput_input,
+#fecha-inicio .SingleDatePickerInput,
+#fecha-fin .DateInput,
+#fecha-fin .DateInput_input,
+#fecha-fin .SingleDatePickerInput {
+    background-color: transparent !important;
+    border: none !important;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    /* Ensure text is centered if possible */
+}
+
+
+/***************************************************  */
+#area-trabajo {
+    flex: 12;
+    display: flex;
+    width: 100%;
+    gap: 1em;
+}
+
+#area-trabajo-izq {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#izq-sup {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+#izq-inf {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+#area-trabajo-der {
+    flex: 4;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+#area-der-sup {
+    flex: 2;
+    width: 100%;
+    display: flex;
+    gap: 1em;
+}
+
+#area-der-inf {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    gap: 1em;
+}
+
+#area-der-sup .cajones:first-child,
+#area-der-inf .cajones:first-child {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+#area-der-sup .cajones:last-child,
+#area-der-inf .cajones:last-child {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.cajones {
+    background-color: var(--primary-color);
+    border: 0.05em solid var(--border);
+    border-radius: 0.5em;
+    width: 100%;
+    height: 100%;
+}
+
+/*  ********************************  Elementos del cajon de la Esquina Superior Izquierda         */
+
+#titulo-portafolio-overview {
+    flex: 1;
+    width: 100%;
+}
+
+#grafico-portafolio-overview {
+    flex: 4;
+    width: 100%;
+}
+
+#grafico-portafolio-evolucion {
+    flex: 5;
+    width: 100%;
+}
+
+/*  ********************************  Elementos del cajon de la Esquina Inferior Izquierda         */
+
+#titulo-portafolio-rates {
+    flex: 1;
+    width: 100%;
+}
+
+#portafolio-rates {
+    flex: 4;
+    width: 100%;
+}
+
+/* #portafolio-anual {
+    flex: 2;
+    width: 100%;
+} */
+
+/*  ********************************  Elementos del cajon Central Superior         */
+
+#titulo-performance_metrics {
+    flex: 1;
+    width: 100%;
+}
+
+#cards-metrics {
+    flex: 4;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.5em;
+    padding: 0.5em;
+    box-sizing: border-box;
+}
+
+.titulo-cards {
+    background-color: var(--he);
+    margin-bottom: 1em;
+}
+
+.cards {
+    /* margin-top: 1em; */
+    margin-left: 0.5em;
+    font-weight: 600;
+}
+
+#grafico-barras {
+    flex: 5;
+    width: 100%;
+}
+
+/*  ********************************  Elementos del cajon Esquina Superior Derecha        */
+
+#titulo-linechart {
+    flex: 1;
+    width: 100%;
+}
+
+#grafico-linechart {
+    flex: 9;
+    width: 100%;
+}
+
+/*  ********************************  Elementos del cajon Central Inferior       */
+
+#titulo-tabla-peq {
+    flex: 1;
+    width: 100%;
+}
+
+#tabla-peq {
+    flex: 4;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*  ********************************  Elementos del cajon Esquina Inferior Derecha      */
+
+#titulo-tabla-gde {
+    flex: 1;
+    width: 100%;
+}
+
+#tabla-gde {
+    flex: 4;
+    width: 100%;
+}
+
+/*  ********************************  Elementos dentro del contenedor de las Cards      */
+
+.card-metric {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 0.5em;
+    border: 1px solid black;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* Ensures content respects border radius */
+}
+
+.titulo-cards {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    background-color: var(--head-tables);
+    /* Optional polish */
+}
+
+#titulo-spx {
+    color: var(--spx-color);
+}
+
+#titulo-btcusd {
+    color: var(--btcusd-color);
+}
+
+#titulo-eurusd {
+    color: var(--eurusd-color);
+}
+
+#titulo-xauusd {
+    color: var(--xauusd-color);
+}
+
+.contenido-cards {
+    flex: 5;
+}
+
+/*  ************************************* */
+
+.titulo-cajones {
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 1em;
+    font-size: 1.2em;
+    font-weight: bold;
+}
