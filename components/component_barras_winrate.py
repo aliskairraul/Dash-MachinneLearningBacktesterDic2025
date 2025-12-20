@@ -1,7 +1,7 @@
 import polars as pl 
 from dash import dcc
 import plotly.graph_objects as go
-from utils.utils import colores_hex  # "eurusd", "btcusd", "xauusd", "spx"
+from utils.utils import colores_hex
 
 
 def returned_barras_winrate(df_summary_winrate: pl.DataFrame):
@@ -21,7 +21,7 @@ def returned_barras_winrate(df_summary_winrate: pl.DataFrame):
 
     fig.update_layout(
         title={
-            'text': "WinRates per Instrument",
+            'text': "WinRates por Instrumento",
             'y':0.9,
             'x':0.5,
             'xanchor': 'center',

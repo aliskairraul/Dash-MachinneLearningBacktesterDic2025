@@ -322,15 +322,17 @@ body {
     box-sizing: border-box;
 }
 
-.titulo-cards {
-    background-color: var(--he);
-    margin-bottom: 1em;
-}
+/* .titulo-cards rule removed (merged below) */
 
 .cards {
-    /* margin-top: 1em; */
+    margin-top: 0.5em;
     margin-left: 0.5em;
     font-weight: 600;
+}
+
+.cards p {
+    margin: 0.1em 0;
+    line-height: 1.5;
 }
 
 #grafico-barras {
@@ -358,7 +360,7 @@ body {
 }
 
 #tabla-peq {
-    flex: 4;
+    flex: 6;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -375,6 +377,9 @@ body {
 #tabla-gde {
     flex: 4;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /*  ********************************  Elementos dentro del contenedor de las Cards      */

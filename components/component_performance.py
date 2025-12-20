@@ -39,22 +39,24 @@ def returned_component_performance(df_back_spx: pl.DataFrame, df_back_eur: pl.Da
             html.Span("Win Rate ", style={'fontSize': '1.1rem', 'fontWeight': 'bold'}),
             html.Span(f"{winrate_portafolio}%", style={'fontSize': '1.3rem', 'fontWeight': 'bold'})
         ], style={'color': '#719CC6'}),
-        html.Div(f"Trades {total_operaciones}", style={'fontSize': '0.9rem', 'color': '#8F9BA3'})
+        html.Div(f"Trades {total_operaciones}", style={'fontSize': '0.9rem', 'fontWeight': 'bold', 'color': 'white'})
     ], style=estilo_bloque)
 
     # Bloque 2: Profit & Days
     bloque_2 = html.Div([
         html.Div([
-            html.Span("Profit ", style={'fontSize': '1.1rem', 'fontWeight': 'bold', 'color': 'white'}),
+            html.Span("Profit% ", style={'fontSize': '1.1rem', 'fontWeight': 'bold', 'color': 'white'}),
             html.Span(f"{simbolo_profit} {variacion_portafolio}%", style={'fontSize': '1.3rem', 'fontWeight': 'bold', 'color': color_profit})
         ]),
-        html.Div(f"Days {dias_operados}", style={'fontSize': '0.9rem', 'color': '#8F9BA3'})
+        # html.Div(f"Dias {dias_operados}", style={'fontSize': '0.9rem', 'color': '#8F9BA3'})
+        html.Div(f"Dias {dias_operados}", style={'fontSize': '0.9rem', 'fontWeight': 'bold', 'color': 'white'})
     ], style=estilo_bloque)
 
     # Bloque 3: Annual Projection
     bloque_3 = html.Div([
-        html.Span("Annual projection ", style={'fontSize': '1rem', 'color': '#8F9BA3'}),
-        html.Span(f"{proyeccion_anual}%", style={'fontSize': '1.1rem', 'fontWeight': 'bold', 'color': 'white'})
+        # html.Span("Annual projection ", style={'fontSize': '1rem', 'color': '#8F9BA3'}),
+        html.Span("Proyección Anual ", style={'fontSize': '1.1rem', 'fontWeight': 'bold', 'color': 'white'}),
+        html.Span(f"{simbolo_profit} {proyeccion_anual}%", style={'fontSize': '1.1rem', 'fontWeight': 'bold', 'color': color_profit})
     ], style={**estilo_bloque, 'borderBottom': 'none', 'flexDirection': 'row', 'justifyContent': 'space-between', 'alignItems': 'center'})
 
     return html.Div([

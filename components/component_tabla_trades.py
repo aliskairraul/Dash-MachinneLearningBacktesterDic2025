@@ -5,14 +5,14 @@ from utils.utils import colores_hex
 
 
 def returned_tablas_trades(df_summary_winrate: pl.DataFrame):
-    df_summary_winrate = df_summary_winrate.filter(pl.col("Instrumento").is_in(["S&P 500", "EURUSD", "BTCUSD","XAUUSD"]))    
+    df_summary_winrate = df_summary_winrate.filter(pl.col("Instrumento").is_in(["S&P 500", "EURUSD", "BTCUSD","XAUUSD", "PORTAFOLIO"]))    
     operaciones = df_summary_winrate["Operaciones"].to_list()
     aciertos = df_summary_winrate["Aciertos"].to_list()
     instrumentos = df_summary_winrate["Instrumento"].to_list()
 
-    row_colors = [colores_hex["spx"], colores_hex["eurusd"], colores_hex["btcusd"], colores_hex["xauusd"]]
+    row_colors = [colores_hex["spx"], colores_hex["eurusd"], colores_hex["btcusd"], colores_hex["xauusd"], colores_hex["portafolio"]]
     
-    text_colors = ['black', 'black', 'black', 'black']
+    text_colors = ['black', 'black', 'black', 'black', 'black']
 
     fig = go.Figure(data=[go.Table(
         header=dict(
@@ -41,5 +41,5 @@ def returned_tablas_trades(df_summary_winrate: pl.DataFrame):
     return dcc.Graph(
         figure=fig,
         config={'displayModeBar': False},
-        style={'height': '100%', 'width': '95%'}
+        style={'height': '95%', 'width': '95%'}
     )

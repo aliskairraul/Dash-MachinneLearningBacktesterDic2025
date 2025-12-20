@@ -10,7 +10,9 @@ from components.component_barras_winrate import returned_barras_winrate
 from components.component_tabla_trades import returned_tablas_trades
 from components.component_evolucion_instrumentos import returned_evolucion_instrumentos
 from components.component_evolucion_elegido import returned_evolucion_elegido
-from utils.utils import keys_datos, diccionario_drop
+from utils.utils import keys_datos, diccionario_drop, returned_summary_winrate
+from components.component_tabla_gde_instrumentos import returned_tabla_gde_instrumentos
+from components.component_tabla_gde_elegido import returned_tabla_gde_elegido
 
 def reconvirtiendo_datos(datos_serializados: dict, keys_datos: list, fecha_ini: datetime.date, fecha_fin: datetime.date) -> list:
     datos = {}
@@ -50,6 +52,7 @@ def actualizar_drop_value(drop_value):
     Output("grafico-barras", "children"),
     Output("tabla-peq", "children"),
     Output("grafico-linechart", "children"),
+    Output("tabla-gde", "children"),
     Output("store-primera-carga", "data"),
     Input("store-ready", "data"),
     Input("store-datos", "data"),
@@ -65,39 +68,53 @@ def actualizar_componentes(store_ready, datos_serializados, fecha_ini_entrada, f
     if not store_ready:
         raise exceptions.PreventUpdate
 
+    if string_to_date(fecha_fin_entrada) <= string_to_date(fecha_ini_entrada):
+        raise exceptions.PreventUpdate    
+
     activado_por_drop = False    
     trigger_id = ctx.triggered_id
-    if trigger_id == "store-drop-value":
-        activado_por_drop = True
+    if (trigger_id == "store-drop-value" and drop_value) or (radioitems_value == "opcion_drop" and drop_value):
+        activado_por_drop = True 
 
     disabled_drop_dow = False if radioitems_value == "opcion_drop" else True
-
-    componente_drop = returned_drop_component(deactive_tab=disabled_drop_dow)
+    value_drop = drop_value if not es_primera_carga else None
+    componente_drop = returned_drop_component(deactive_tab=disabled_drop_dow, value_drop=value_drop)
 
     fecha_ini = string_to_date(datos_serializados["fecha_ini"]) if es_primera_carga else string_to_date(fecha_ini_entrada)
     fecha_fin = string_to_date(datos_serializados["fecha_fin"]) if es_primera_carga else string_to_date(fecha_fin_entrada)
     
     datos = reconvirtiendo_datos(datos_serializados=datos_serializados, keys_datos=keys_datos, fecha_ini=fecha_ini, fecha_fin=fecha_fin)   
 
-    card_spx = retorna_card(df=datos["back_spx"])   
-    card_eur = retorna_card(df=datos["back_eur"])   
-    card_btc = retorna_card(df=datos["back_btc"])   
-    card_xau = retorna_card(df=datos["back_xau"])                                                                            
+    card_spx = retorna_card(df=datos["back_spx"], habiles_anio=252)   
+    card_eur = retorna_card(df=datos["back_eur"], habiles_anio=252)   
+    card_btc = retorna_card(df=datos["back_btc"], habiles_anio=365)   
+    card_xau = retorna_card(df=datos["back_xau"], habiles_anio=252)                                                                            
     
     dona_overview = returned_dona_overview(df_back_spx=datos["back_spx"], df_back_eur=datos["back_eur"],
                                            df_back_btc=datos["back_btc"], df_back_xau=datos["back_xau"])
         
-    component_current_equity = returned_current_equity(df_evolution_capital=datos["evolution_capital"])
+    componente_current_equity = returned_current_equity(df_evolution_capital=datos["evolution_capital"])
                                                        
-    component_performance = returned_component_performance(df_back_spx=datos["back_spx"], df_back_eur=datos["back_eur"],
+    componente_performance = returned_component_performance(df_back_spx=datos["back_spx"], df_back_eur=datos["back_eur"],
                                                            df_back_btc=datos["back_btc"], df_back_xau=datos["back_xau"])
     
-    componente_barras = returned_barras_winrate(df_summary_winrate=datos["summary_winrate"])
+    df_summary_winrate = returned_summary_winrate(df_back_spx=datos["back_spx"], df_back_eur=datos["back_eur"],
+                                                  df_back_btc=datos["back_btc"], df_back_xau=datos["back_xau"])
+    componente_barras = returned_barras_winrate(df_summary_winrate=df_summary_winrate)
     
-    componente_tabla = returned_tablas_trades(df_summary_winrate=datos["summary_winrate"])
+    componente_tabla = returned_tablas_trades(df_summary_winrate=df_summary_winrate)
     
-    componente_evolucion = returned_evolucion_instrumentos(df_evolution_capital=datos["evolution_capital"]) if not activado_por_drop else                           returned_evolucion_elegido(df_evolution_capital=datos["evolution_capital"], df_elegido=datos[diccionario_drop[drop_value]], drop_value=drop_value)
-
+    componente_evolucion = None
+    componente_tabla_gde = None
+    if not activado_por_drop:
+        componente_evolucion = returned_evolucion_instrumentos(df_evolution_capital=datos["evolution_capital"]) 
+        componente_tabla_gde = returned_tabla_gde_instrumentos(df_trades_aciertos_diarios=datos["df_trades_aciertos_diarios"])
+    else:
+        componente_evolucion = returned_evolucion_elegido(df_evolution_capital=datos["evolution_capital"],
+                                                          df_elegido=datos[diccionario_drop[drop_value]], drop_value=drop_value)
+        componente_tabla_gde = returned_tabla_gde_elegido(df_trades_aciertos=datos["df_trades_aciertos_diarios"],
+                                                          df_elegido=datos[diccionario_drop[drop_value]], nombre_elegido=drop_value)
+    
     es_primera_carga = False
-    return componente_drop, dona_overview, component_current_equity, component_performance, card_spx, card_eur, card_btc,\
-           card_xau, componente_barras, componente_tabla, componente_evolucion, es_primera_carga
+    return componente_drop, dona_overview, componente_current_equity, componente_performance, card_spx, card_eur, card_btc,\
+           card_xau, componente_barras, componente_tabla, componente_evolucion, componente_tabla_gde, es_primera_carga

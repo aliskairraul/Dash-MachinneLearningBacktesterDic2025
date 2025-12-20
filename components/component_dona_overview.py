@@ -16,7 +16,7 @@ def returned_dona_overview(df_back_spx: pl.DataFrame, df_back_eur: pl.DataFrame,
     color_portafolio = "#79CA7C" if monto_portafolio > monto_inicial else "#FF0000"
 
     # Datos para el gráfico
-    labels = ["BTC", "EUR", "SPX", "XAU"]
+    labels = ["BTCUSD", "EURUSD", "S&P 500", "XAUUSD"]
     values = [monto_btc, monto_eur, monto_spx, monto_xau]
     colors = [colores_hex["btcusd"], colores_hex["eurusd"], colores_hex["spx"], colores_hex["xauusd"]]
 
@@ -27,7 +27,7 @@ def returned_dona_overview(df_back_spx: pl.DataFrame, df_back_eur: pl.DataFrame,
         marker=dict(colors=colors, line=dict(color='#000000', width=0)),
         sort=False,
         textinfo='none',
-        hovertemplate='<b>%{label}</b><br>Monto: $%{value:,.2f}<br>Porcentaje: %{percent}<extra></extra>'
+        hovertemplate='<b>%{label}</b><br>Monto: $%{value:,.2f}<br>Participación Relativa: %{percent}<extra></extra>'
     )])
 
     fig.update_layout(

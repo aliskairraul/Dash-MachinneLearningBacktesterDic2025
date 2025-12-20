@@ -17,7 +17,7 @@ def returned_current_equity(df_evolution_capital: pl.DataFrame):
 
     fig.update_layout(
         title={
-            'text': "Current Equity",
+            'text': "Evolución Patrimonio",
             'y':0.9,
             'x':0.5,
             'xanchor': 'center',
@@ -48,7 +48,7 @@ def returned_current_equity(df_evolution_capital: pl.DataFrame):
         figure=fig,
         config={'displayModeBar': False},
         style={'height': '100%', 'width': '100%'},
-        id="grafico-portafolio-evolucion"
+        id="inner-grafico-portafolio-evolucion"
     )
     
     return component_current_equity

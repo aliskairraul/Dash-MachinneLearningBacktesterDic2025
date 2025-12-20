@@ -2,6 +2,9 @@ import polars as pl
 from dash import dcc 
 import plotly.graph_objects as go 
 from utils.utils import colores_hex
+from datetime import datetime
+
+fecha_inicio = datetime(2025, 8, 1).date()
 
 
 def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: pl.DataFrame, drop_value: str):
@@ -15,7 +18,11 @@ def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: p
     proyeccion_anual_tooltip = round(((profit_tooltip / dias) * 365),2)
 
     # Data para la grafica
-    titulo_grafica = f"Evolución de {drop_value} Vs Portafolio"
+    # titulo_grafica = f"Evolución de {drop_value} Vs Portafolio"
+    if df_elegido["date"][0] != fecha_inicio:
+        titulo_grafica = f"Modelo: {drop_value}    Vs   Portafolio <br> Ambos comenzaron con 10000$ el 01/08/2025"
+    else:
+        titulo_grafica = f"Modelo: {drop_value}    Vs   Portafolio"    
     df_elegido = df_elegido.select(["date", "Monto_ini_dia"])
     df_elegido.columns = ["date", drop_value]
 
@@ -34,13 +41,6 @@ def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: p
         name='Portafolio',
         line=dict(color='#ab63fa')
     ))
-
-    # Selected Instrument Trace (drop_value)
-    # Tooltip data: ["Dias", "Trades", "Aciertos", "Winrate", "Profit", "Return_strategy", "Proyeccion_anual"]
-    
-    # We create a customdata list where each element mimics the structure needed for the tooltip
-    # Since these are summary stats, they are constant for the line, but Plotly expects an array matching x/y length or a single value (if applicable in context, but easier to repeat specific values or just use formatted hovertemplate with fixed values if we want single box info, but hovertemplate usually works per point. 
-    # To show the summary stats on HOVER of any point on this line, we can just embed them in the hovertemplate directly since they are scalar values calculated above.)
     
     # Logic for tooltip formatting
     color_up = colores_hex['up']
@@ -53,14 +53,15 @@ def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: p
         if is_pct: txt += "%"
         return f"<span style='color:{color}'>{symbol} {txt}</span>"
 
-    profit_formatted = format_stat(profit_tooltip)
-    ganancia_formatted = format_stat(ganancia_tooltip, is_pct=True)
+    profit_formatted = format_stat(profit_tooltip, is_pct=True)
+    ganancia_formatted = format_stat(ganancia_tooltip)
     proj_formatted = format_stat(proyeccion_anual_tooltip, is_pct=True)
+    drop_value_formatted = f"<span style='color:{colores_hex['modelo_elegido']}; font-size: 12px'>{drop_value}</span>"
     
     # Info Data for Annotation (White text wrapper)
     info_text = (
         f"<span style='color:white; font-size: 12px'>"
-        f"<b>{drop_value}</b><br>" 
+        f"<b>{drop_value_formatted}</b><br>" 
         f"Dias: {dias}<br>" 
         f"Trades: {trades_tooltip}<br>" 
         f"Aciertos: {aciertos_tooltip}<br>" 
@@ -76,7 +77,7 @@ def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: p
         y=df_evolution_capital[drop_value],
         mode='lines',
         name=drop_value,
-        line=dict(color='white')
+        line=dict(color=colores_hex["modelo_elegido"])
     ))
 
     fig.update_layout(

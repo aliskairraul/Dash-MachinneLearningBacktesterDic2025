@@ -50,35 +50,29 @@ def realizar_backtesting_instrumentos(df_btcusd: pl.DataFrame, df_eurusd: pl.Dat
     )
     datos["evolution_capital"] = df_evolution_capital.to_dicts()
 
-    # Operaciones, Aciertos y WinRates
-    operaciones_btc = df_back_btc["operaciones"].sum()
-    aciertos_btc = df_back_btc["aciertos"].sum()
-    winrate_btc = round((aciertos_btc / operaciones_btc * 100),2)  if operaciones_btc > 0 else 0   
+    # Trades-Aciertos Diarios (Instrumentos Financieros y Portafolio)
+    mini_btc = df_back_btc.select(["date", "operaciones", "aciertos"])
+    mini_btc.columns = ["date", "Trades-BTC", "✅-BTC"]
 
-    operaciones_eur = df_back_eur["operaciones"].sum()  
-    aciertos_eur = df_back_eur["aciertos"].sum()
-    winrate_eur = round((aciertos_eur / operaciones_eur * 100),2)  if operaciones_eur > 0 else 0 
+    mini_eur = df_back_eur.select(["date", "operaciones", "aciertos"])
+    mini_eur.columns = ["date", "Trades-EUR", "✅-EUR"]
 
-    operaciones_xau = df_back_xau["operaciones"].sum()
-    aciertos_xau = df_back_xau["aciertos"].sum()
-    winrate_xau = round((aciertos_xau / operaciones_xau * 100),2)  if operaciones_xau > 0 else 0
+    mini_xau = df_back_xau.select(["date", "operaciones", "aciertos"])
+    mini_xau.columns = ["date", "Trades-XAU", "✅-XAU"]
 
-    operaciones_spx = df_back_spx["operaciones"].sum()
-    aciertos_spx = df_back_spx["aciertos"].sum()
-    winrate_spx = round((aciertos_spx / operaciones_spx * 100),2)  if operaciones_spx > 0 else 0
+    mini_spx = df_back_spx.select(["date", "operaciones", "aciertos"])
+    mini_spx.columns = ["date", "Trades-SP-500", "✅-SP-500"]
 
-    operaciones_portafolio = operaciones_btc + operaciones_eur + operaciones_xau + operaciones_spx
-    aciertos_portafolio = aciertos_btc + aciertos_eur + aciertos_xau + aciertos_spx
-    winrate_portafolio = round((aciertos_portafolio / operaciones_portafolio * 100),2)  if operaciones_portafolio > 0 else 0
+    df_trades_aciertos = mini_btc.join(mini_eur, on="date", how="left", coalesce=True)
+    df_trades_aciertos = df_trades_aciertos.join(mini_xau, on="date", how="left", coalesce=True)
+    df_trades_aciertos = df_trades_aciertos.join(mini_spx, on="date", how="left", coalesce=True)
+    df_trades_aciertos = df_trades_aciertos.fill_null(strategy="forward")
 
-    data = {
-        "Instrumento": ["S&P 500", "EURUSD", "BTCUSD","XAUUSD", "PORTAFOLIO"],
-        "Operaciones": [operaciones_spx, operaciones_eur, operaciones_btc, operaciones_xau, operaciones_portafolio],
-        "Aciertos": [aciertos_spx, aciertos_eur, aciertos_btc, aciertos_xau, aciertos_portafolio],
-        "Winrate": [winrate_spx, winrate_eur, winrate_btc, winrate_xau, winrate_portafolio] 
-    }    
-    df_summary_winrate = pl.DataFrame(data)
-    datos["summary_winrate"] = df_summary_winrate.to_dicts()
+    df_trades_aciertos = df_trades_aciertos.with_columns(
+        pl.sum_horizontal(["Trades-BTC", "Trades-EUR", "Trades-XAU", "Trades-SP-500"]).alias("Trades_Portafolio"),
+        pl.sum_horizontal(["✅-BTC", "✅-EUR", "✅-XAU", "✅-SP-500"]).alias("✅_Portafolio")
+    )
+    datos["df_trades_aciertos_diarios"] = df_trades_aciertos.to_dicts()
 
     return datos
 
@@ -180,8 +174,8 @@ def cerrar_modal(data):
     prevent_initial_call=True
 )
 def cargar_data(n):
-    # obtener_data_github()
-    # pasar_data_de_instrumentos_a_librerias()
+    obtener_data_github()
+    pasar_data_de_instrumentos_a_librerias()
     datos = {}
 
     df_btcusd = pl.read_parquet(paths_data_github["BTCUSD"])

@@ -32,7 +32,7 @@ interval_loader = dcc.Interval(id="interval-loader", interval=500, n_intervals=0
 store_cargo_data_correctamente = dcc.Store(id="cargo-data-externa", data={"cargo_correctamente": False})
 store_datos = dcc.Store(id="store-datos")
 store_es_primera_carga = dcc.Store(id="store-primera-carga", data=True)
-store_drop_value = dcc.Store(id="store-drop-value", data="")
+store_drop_value = dcc.Store(id="store-drop-value", data=None)
 store_ready = dcc.Store(id="store-ready")
 
 # 🚀 App Dash
@@ -40,7 +40,8 @@ app = Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
     suppress_callback_exceptions=True,
-    title="Machinne Learning Trading BACKTESTER"
+    title="Machinne Learning Trading BACKTESTER",
+    meta_tags=[{'name': 'google', 'content': 'notranslate'}]
 )
 # server = app.server
 
@@ -68,12 +69,12 @@ app.layout = html.Div([
     html.Div([
         html.Div([
             html.Div([
-                html.Div("Portafolio Overview", id="titulo-portafolio-overview", className="titulo-cajones"),
+                html.Div("Composición Portafolio", id="titulo-portafolio-overview", className="titulo-cajones"),
                 html.Div(id="grafico-portafolio-overview", className="primario-degradado"),
                 html.Div(id="grafico-portafolio-evolucion"),
             ], id="izq-sup", className="cajones"),
             html.Div([
-                html.Div("Performance", id="titulo-portafolio-rates", className="titulo-cajones"),
+                html.Div("Performance Portafolio", id="titulo-portafolio-rates", className="titulo-cajones"),
                 html.Div(id="portafolio-rates", className="mini-cajones"),
                 # html.Div(id="portafolio-anual", className="mini-cajones"),
             ], id="izq-inf", className="cajones"),
@@ -82,7 +83,7 @@ app.layout = html.Div([
         html.Div([
             html.Div([
                 html.Div([
-                    html.Div("Instrument Metrics", id="titulo-performance_metrics", className="titulo-cajones"),
+                    html.Div("Metricas por Instrumento", id="titulo-performance_metrics", className="titulo-cajones"),
                     html.Div([
                         html.Div([
                             html.Div("S&P 500", id="titulo-spx", className="titulo-cards"),
@@ -104,17 +105,17 @@ app.layout = html.Div([
                     html.Div(id="grafico-barras"),
                 ], id="der-sup-1", className="cajones"),
                 html.Div([
-                    html.Div("Daily Equity Evolution", id="titulo-linechart", className="titulo-cajones"),
+                    html.Div("Evolución diaria de la Cartera", id="titulo-linechart", className="titulo-cajones"),
                     html.Div(id="grafico-linechart"),
                 ],id="der-sup-2", className="cajones")
             ], id="area-der-sup"),
             html.Div([
                 html.Div([
-                    html.Div("Trades per Instrument", id="titulo-tabla-peq", className="titulo-cajones"),
+                    html.Div("Trades por Instrumento", id="titulo-tabla-peq", className="titulo-cajones"),
                     html.Div(id="tabla-peq"),
                 ], id="der-inf-1", className="cajones"),
                 html.Div([
-                    html.Div("Daily Transactions", id="titulo-tabla-gde", className="titulo-cajones"),
+                    html.Div("Transacciones Diarias", id="titulo-tabla-gde", className="titulo-cajones"),
                     html.Div(id="tabla-gde"),
                 ], id="der-inf-2", className="cajones")
             ], id="area-der-inf")

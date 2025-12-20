@@ -45,7 +45,7 @@ def returned_evolucion_instrumentos(df_evolution_capital: pl.DataFrame):
 
     fig.update_layout(
         title={
-            'text': "Evolutions per Instruments",
+            'text': "Evolución por Instrumentos <br> (2500$ inicial c/instrumento el 01/08/2025)",
             'y': 0.95,
             'x': 0.5,
             'xanchor': 'center',

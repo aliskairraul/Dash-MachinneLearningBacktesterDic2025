@@ -9,9 +9,9 @@ def returned_radioitems_component():
             id="dcc-radioitems",
             options=[
                 # {"label": "All Models", "value": "all"},
-                {"label": "Portfolio & Instruments", "value": "instrumentos"},
+                {"label": "Evolución Patrimonio (por Instrumentos)", "value": "instrumentos"},
                 # {"label": "Portfolio & Librarys", "value": "librerias"},
-                {"label": "Instrument/Librarian Specific", "value": "opcion_drop"}
+                {"label": "Simulación Modelo Específico Vs Portafolio", "value": "opcion_drop"}
             ],
             className="my-radio-items",
             value="instrumentos",
