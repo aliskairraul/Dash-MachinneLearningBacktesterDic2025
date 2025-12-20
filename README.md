@@ -1,4 +1,4 @@
-# Dashboard de Backtesting con Machine Learning
+# Dashboard de Backtesting en Trading de Predicciones con Machine Learning
 
 ## Visión General
 
@@ -133,6 +133,13 @@ Este proyecto se publica bajo la **Licencia MIT**. Consulte el archivo `LICENSE`
 - **GitHub**: https://github.com/aliskairraul
 - **Email**: aliskairraul@gmail.com
 - **Desplegado**: https://ef5576ef-9622-420c-8f49-8e5f7facc205.plotly.app
+
+## Flujo del proyecto
+
+![Flujo del proyecto](assets/flujo_proyecto.png)
+
+*Diagrama que muestra la interacción entre los repositorios de datos, inferencias y la aplicación Dash.*
+
 
 ---
 

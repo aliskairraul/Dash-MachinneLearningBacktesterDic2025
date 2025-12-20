@@ -9,4 +9,3 @@ __pycache__/
 venv/
 
 # 3) Ignorar archivo específico dentro de una subcarpeta
-ayuda.txt

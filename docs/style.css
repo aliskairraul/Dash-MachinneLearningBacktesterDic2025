@@ -1,0 +1,100 @@
+/* style.css - Professional dark theme for GitHub Pages site */
+:root {
+  --bg-color: #1a1a1a;
+  --text-color: #e0e0e0;
+  --accent-color: #4a90e2;
+  --font-family: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  line-height: 1.6;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header.hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header.hero h1 {
+  font-size: 2.5rem;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+}
+
+header.hero .tagline {
+  font-size: 1.2rem;
+  opacity: 0.85;
+}
+
+section {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 2rem;
+}
+
+section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: 0.3rem;
+}
+
+.gallery .images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.gallery .images img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
+}
+
+.gallery .images img:hover {
+  transform: scale(1.02);
+}
+
+.cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta .button {
+  background: var(--accent-color);
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.cta .button:hover {
+  background: #357ab8;
+}
+
+footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}

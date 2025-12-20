@@ -1,0 +1,81 @@
+Contexto: Python. App de Dash para Viasualizar Predicciones y Backtesting de Modelos de Machinne y Deep Learning sobre Instrumentos Financieros.
+Los Instrumentos Financieros Elegidos fueron:
+    - S&P 500 (El indice mas Importante de los EEUU)
+    - EURUSD  (El Par de Moneda mas Importante del Mercado de Forex)
+    - BTCUSD  (La Criptomoneda mas Importante en relación a la moneda mas Global)
+    - XAUUSD  (Uno de los Metales mas apetecidos en relación a la moneda mas global).
+Las Librerias con las que se entrenaron los modelos de Prediccion son las siguientes:
+    - Sklearn
+    - Lightgbm
+    - Xgboost
+    - Pytorch
+    - Tensorflow
+
+Dado lo complejo de manejar automatizadamente la recolección diaria de información donde se usaron librerias de WebScraping y peticiones a sitios web, la parte automatizada de las Inferencias donde el entorno debe contar con  librerias pesadas como Tensorflow y Pytorch, y por otra parte el Tablero como tal cuyo entorno debe tener instalado la libreria de Dash se dividió el Proyecto en 3 Partes:
+  1) Obtencion de Data de Instrumentos Financieros  
+    - Repositorio: https://github.com/aliskairraul/Actualiza-Data-Instrumentos
+    Urls para descargar la data de los Instrumentos:
+    urls = {
+        'BTCUSD': "https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/btcusd-D1_2010-07-17_actualidad.parquet",
+        'EURUSD': "https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/eurusd-D1_2000-01-03_actualidad.parquet",
+        'SPX': "https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/sp500-D1_2000-01-03_actualidad.parquet",
+        'XAUUSD': "https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/xauusd-D1_2000-01-03_actualidad.parquet",
+        'US10Y': "https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/us10y-D1_2000-01-03_actualidad.parquet",
+        'USDX': "https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/usdx-D1_2000-01-03_actualidad.parquet"
+    }
+
+ 2) Predicción sobre data de Instrumentos:
+    - Repositorio: https://github.com/aliskairraul/Inferencias_instrumentos_dic_2025
+    Urls para descargar los resultados de las Predicciones
+    urls_inferencias_predicciones = {
+        "BTCUSD": "https://raw.githubusercontent.com/aliskairraul/Inferencias_instrumentos_dic_2025/main/models/data/predicciones_aciertos_btcusd.parquet",
+        'EURUSD': "https://raw.githubusercontent.com/aliskairraul/Inferencias_instrumentos_dic_2025/main/models/data/predicciones_aciertos_eurusd.parquet",
+        'SPX': "https://raw.githubusercontent.com/aliskairraul/Inferencias_instrumentos_dic_2025/main/models/data/predicciones_aciertos_spx.parquet",
+        'XAUUSD': "https://raw.githubusercontent.com/aliskairraul/Inferencias_instrumentos_dic_2025/main/models/data/predicciones_aciertos_xauusd.parquet",
+    }
+
+ 3) Visualización del Backtesting y Predicciones (Dashboard)
+Descripción del Proyecto:
+Se entreno un modelo de cada Libreria para cada uno de los Instrumentos Financieros.  Los modelos se entrenaron y Testearon con data que llega hasta el 31-12-2024.   Luego fueron sometidos a prueba con data desde el 01/01/2025 hasta el 31/07/2025.  A partir del 01/08/2025 se comenzó con la prueba de los modelos con data nunca vista por los mismos.
+Los Modelos Solo Predicen la direccion del precio del dia siguiente, por lo que el backtest se hace en base a una única operación diaria posible, donde se contemplan sus respectivos costos de operacion.
+ESTRATEGIA UTILIZADA PARA EL BACKTEST
+Dado que para poder invertir se requiere actuar con cautela se invierte solo cuando el modelo tenga un factor de probabilidad (que cumpla una espectativa), con esto lo que te quiero decir es que es posible que despues de tomar el resultado de la predicción la decisión sea NO INVERTIR un dia determinado.
+Pasos de la estrategia:
+    - Se partió con el Supuesto de un capital inicial de 10000$. El capital Inicial se dividió en 4 partes iguales (Una para cada Instrumento).  
+    - La logica del backtest es muy sencilla: Cada dia (por cada Instrumento Financiero), se revisa si hay algún modelo con la predicción de Invertir, De encontrarse modelos con intencion de invertir el capital disponible (en el momento y para ese instrumento) entre el numero de modelos que desean invertir, ejemplo si 3 modelos desean invertir se divide el capital en 3 partes iguales.  
+    - Se hace votacion por mayoria, es decir, tomando en cuenta el ejemplo de 3 modelos, si todos deciden operar se hace una operacion con el total del Capital disponible (en el caso del Bitcoin) y con el lotaje Full establecido (en el caso de los otros instrumentos).
+    - En caso de votacion dividida, ejemplo 3 Modelo eligen Subida y 2 eligen Bajada; se realiza 1 operacion en Subida con el 20% del capital disponible o lotaje respectivo.  Se toma en cuenta la proporcion de cada votante, si el 40% queria operar a la baja y el 60% al alza, entonces se opera el 20% al alza.
+Aplicacion en Dash:
+La Aplicacion muestra 6 Cuadros de Información:
+    - Composición Portafolio (incluye evolución del patrimonio): Se presenta en forma de Dona, donde cada color representa la parte del capital Total que en ese momento lleva cada Instrumento (al pasar el mouse por la dona muestra la información). En la parte central de la Dona en Grande aparece el Capital actual de la cartera de Inversion y el capital con que inicio la simulacion en la Fecha seleccionada.  Tome en cuenta que puede ajustar las fechas de principio y fin.
+    - Performance Portafolio: Se muestra la tasa de Aciertos, nuemro de trades, Profit, dias trancurridos de mercado en el intervalo de fechas (incluye dias que los modelos hayan decidido NO OPERAR), y Proyección anualizada (el profit de ese periodo de tiempo proyectado a un año calendario).
+    - Metricas Por Instrumento: Dado el Perioro de Tiempo Seleccionado, se muestra la Variacion de Precio que a sufrido cada Instrumento financiero, El Profit de haber aplicado la estrategia con las predicciones de los modelos y la proyeccion anualizada del mismo.  Tambien se muestra un grafico de Barras con las Tasas de Aciertos que han tenido los modelos respectivos sobre cada uno de los instrumentos Financieros.
+    - Trades por Intrumento: Los Trades y Aciertos de los modelos en cada uno de los Instrumentos.
+    - Evolución diaria de la Cartera: 
+        - Evolución Patrimonio (por Instrumentos): Aca observamos como va evolucionado el capital de cada parte (1 parte por cada instrumento) de la cartera de inversion.  Tomar en cuenta que si la fecha de inicio no es 01/08/2025 entonces seguramente cada Instrumento va a disponer de fondos diferentes y el inicio de las subcarteras no van a coincidir en el grafico.  Si desea obtener profit o desempeño en ese periodo la informacion estara en la sesion de metricas, descrita anteriormente.
+        - Simulación Modelo Específico Vs Portafolio: Si elige esta Opcion se hace una simulacion de que pasaria si se inviertiera TODO el capital (los 10000$ iniciales) en un único modelo, como pudiera ser el modelo entrenado en la Libreria Tensorflow que hace Predicciones sobre el Instrumento Financiero S&P-500.  Entonces Vería como iría el capital con ese modelo en una linea blanca y como sería la evolución del capital siguiendo la estrategia del portafolio completo en una linea Purpura.
+    - Transacciones Diarias:
+        - Evolución Patrimonio (por Instrumentos): Se observa dia a dia los Trades y Aciertos de cada Instrumento Financiero.
+        - Simulación Modelo Específico Vs Portafolio: Se observa dia a dia los Trades y Aciertos del modelo específico elegido y de la estrategia de Portafolio completo.
+
+Conclusiones:
+    - La Tasa de Acierto es un factor importante en el desempeño económico de una estrategia de Inversión, pero no siempre mayor winrate significa mayor rentabilidad, ya que si la predicción es errónea un dia que la Volatilidad es MUY ALTA, ese dia se puede perder mas que varios dias que acierte.
+    - Minimizar los riesgos y suavizar la curva de la evolución del capital se logran diversificando, lo cual también es importante para poner a jugar a la estadística a favor de la Inversión.
+    - En un entorno de Inversión real se necesita disponer de los datos de manera inmediata. Tener en cuenta que este es un proyecto que se está desplegando en tres partes de manera Gratuita, por ende se dedica sólo a caso de estudio retorspectivo y no se recomienda usar SOLO como estrategia de inversión.
+    - La rentabilidad sólo se puede alcanzar en periodos de tiempo prolongados y portafolios diversificados, en periodos cortos y colocando el capital en un solo instrumento entra un factor riesgo alto (si el instrumento en cuestion entra en volatilidad alta).
+
+
+Proximos Pasos:
+    - Utilizar la herramienta para seguimiento del comportamiento de la Cartera. Ir observando que modelo específico (libreria/Instrumento) es mas constante mes a mes en su Winrate
+    - Estudio de nuevos Instrumentos Financieros, preferiblemente no interdependientes de los actuales a fin de aumentar el portafolio y diversificar riesgos
+    - En caso de considerar operaciones reales se necesitaria disponer de plataforma donde los datos de cierre al instante de producirse y plataforma donde desplegar los modelos de Inferencias que realicen las mismas de manera inmediata. En este caso de estudio se hace con Github Actions, por lo que los workflows entran en cola para su ejecusión y esto sirve sólo para estudio.
+    - En caso de considerar operar debe combinar predicciones con Bots de Trading que se comunique mediante Api, y esto le daría mas control, ya que pudiera combinar esta informacion con estartegias de Trading tradicionales o ajustar el bot para detectar grandes dias de grandes volatilidades cierre operaciones sin tantas perdidas, lo que se traduciría en una mejor relación winrate/rentabilidad.
+
+imagen: assets/app_pantalla_inicial.png   Imagen justo cuando termina de cargar la pagina
+imagen: assets/app_seleccionando_fechas   Imagen con el componente de la fecha desplegado
+
+
+ok.. ya la coloque publica y agregue el link al README....   El Flujo del Proyecto es el Siguiente:  Repositorio de Github `https://github.com/aliskairraul/Actualiza-Data-Instrumentos` que una vez por dia con webscraping y requests obtiene y graba data.  Segundo repositorio de Github `https://github.com/aliskairraul/Inferencias_instrumentos_dic_2025` que una vez al dia (2 horas despues del primero) substrae la data del primer repositorio la adecua y realiza las inferencias con las Librerias Sklearn, Lightgbm, Xgboost, PyTorch y Tensorflow y persiste las inferencias en archivos.    3) App de Dash( repositorio ) que al Arrancar (en un modal de entrada) hace requests a las inferencias transforma, hace Backtesting guarda los datos en un dcc.Store y muestra el Dashboard interactivo. 
+
+Despliegue de la App en Plotly Cloud: `https://ef5576ef-9622-420c-8f49-8e5f7facc205.plotly.app`
+Repositorio de Github: `https://github.com/aliskairraul/Dash-MachinneLearningBacktesterDic2025`
