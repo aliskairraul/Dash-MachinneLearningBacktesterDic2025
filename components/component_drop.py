@@ -2,7 +2,7 @@ from dash import html, dcc
 from utils.utils import diccionario_drop
 
 
-def returned_drop_component(deactive_tab: bool, value_drop: str):
+def returned_drop_component(deactive_tab: bool, value_drop: str) -> html.Div:
     options = list(diccionario_drop.keys())
     color_placeholder = "rgb(143, 155, 163)" if deactive_tab else "rgb(255, 255, 255)"
     font_weight_placehold = "" if deactive_tab else "bold"

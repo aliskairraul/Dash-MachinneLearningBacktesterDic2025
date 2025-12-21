@@ -1,7 +1,7 @@
 from dash import html, dcc
 
 
-def returned_radioitems_component():
+def returned_radioitems_component() -> html.Div:
     
     radioitem_component = html.Div(
         [

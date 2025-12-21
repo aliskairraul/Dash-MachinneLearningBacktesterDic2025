@@ -3,8 +3,9 @@ from dash import dcc
 import plotly.graph_objects as go 
 from utils.utils import colores_hex 
 
+
 # def returned_evolucion_instrumentos(df_back_spx: pl.DataFrame, df_back_eur: pl.DataFrame, df_back_btc: pl.DataFrame, df_back_xau: pl.DataFrame):
-def returned_evolucion_instrumentos(df_evolution_capital: pl.DataFrame):
+def returned_evolucion_instrumentos(df_evolution_capital: pl.DataFrame) -> dcc.Graph:
     fig = go.Figure()
 
     # BTCUSD Trace

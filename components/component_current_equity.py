@@ -3,7 +3,7 @@ from dash import html, dcc
 import plotly.graph_objects as go
 
 
-def returned_current_equity(df_evolution_capital: pl.DataFrame):
+def returned_current_equity(df_evolution_capital: pl.DataFrame) -> dcc.Graph:
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(

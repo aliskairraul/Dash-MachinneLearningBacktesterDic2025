@@ -7,7 +7,7 @@ from datetime import datetime
 fecha_inicio = datetime(2025, 8, 1).date()
 
 
-def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: pl.DataFrame, drop_value: str):
+def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: pl.DataFrame, drop_value: str) -> dcc.Graph:
     # Datos para el tooltip
     dias = df_evolution_capital.shape[0]
     trades_tooltip = df_elegido["operaciones"].sum()

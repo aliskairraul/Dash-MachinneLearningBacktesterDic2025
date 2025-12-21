@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from utils.utils import colores_hex
 
 
-def returned_barras_winrate(df_summary_winrate: pl.DataFrame):
+def returned_barras_winrate(df_summary_winrate: pl.DataFrame) -> dcc.Graph:
     df_summary_winrate = df_summary_winrate.filter(pl.col("Instrumento").is_in(["S&P 500", "EURUSD", "BTCUSD","XAUUSD"]))
     instrumentos = df_summary_winrate["Instrumento"].to_list()
     winrates = df_summary_winrate["Winrate"].to_list()

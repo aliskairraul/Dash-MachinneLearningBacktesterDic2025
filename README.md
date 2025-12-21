@@ -1,146 +1,119 @@
-# Dashboard de Backtesting en Trading de Predicciones con Machine Learning
+# 🚀 Dashboard de Backtesting con Machine Learning
 
-## Visión General
+![Python](https://img.shields.io/badge/Language-Python%203.9%2B-blue)
+![Dash](https://img.shields.io/badge/Framework-Dash-blueviolet)
+![Machine Learning](https://img.shields.io/badge/Tech-Machine%20Learning-gold)
+![Status](https://img.shields.io/badge/Status-Functional-green)
 
-**Dashboard de Backtesting con Machine Learning** es una aplicación interactiva construida con **Dash** que visualiza predicciones y resultados de back‑testing de modelos de aprendizaje automático y profundo aplicados a instrumentos financieros. Integra la adquisición de datos, inferencia de modelos y una interfaz rica para que analistas e inversores exploren el rendimiento de la cartera, tasas de acierto de los modelos y simulaciones de operaciones diarias.
-
----
-
-## Características Principales
-
-- **Evaluación multi‑instrumento**: S&P 500, EURUSD, BTCUSD, XAUUSD.
-- **Pipeline de datos**:
-  - Recolección automática diaria mediante web‑scraping y peticiones a Apis públicas.
-  - Repositorios separados para datos crudos (`Actualiza-Data-Instrumentos`) y predicciones de modelos (`Inferencias_instrumentos_dic_2025`).
-- **Conjunto de modelos**:
-  - Implementaciones con **scikit‑learn**, **LightGBM**, **XGBoost**, **PyTorch** y **TensorFlow**.
-  - Cada modelo predice la *dirección* del precio del día siguiente.
-- **Motor de back‑testing**:
-  - Simula una única operación diaria por instrumento.
-  - Asignación de capital basada en la confianza del modelo y votación mayoritaria.
-  - Métricas detalladas: tasa de acierto, beneficio, número de operaciones diarias, proyección anualizada.
-- **Dashboard interactivo**:
-  - Gráfico de dona que muestra la composición de la cartera.
-  - Resumen de desempeño (beneficio, tasa de acierto, número de operaciones).
-  - Métricas por instrumento y gráficos de barras de tasas de acierto.
-  - Evolución diaria de la cartera y del capital por instrumento.
-  - Vista de operaciones día a día con simulaciones específicas de cada modelo.
-- **Arquitectura extensible**: Fácil añadir nuevos instrumentos, fuentes de datos o familias de modelos.
+Este proyecto es una aplicación interactiva de alto rendimiento construida con **Dash** para la visualización de predicciones y resultados de backtesting. El sistema integra modelos de Inteligencia Artificial para el análisis de instrumentos financieros, permitiendo explorar el rendimiento de carteras, tasas de acierto y simulaciones de trading diario en un entorno visual profesional.
 
 ---
 
-## Estructura del Proyecto
+## 📈 Instrumentos Financieros Cubiertos
 
-```
-pro-machinne-dash/
-│   README.md               # <-- este archivo
-│   main.py                 # Punto de entrada de Dash
-│   ayuda.txt               # Descripción del proyecto (fuente de este README)
-│   utils/
-│       utils.py           # Variables globales y otros
-│   functions/             # Funciones Carga/Transformación/Backtesting, Funciones callbacks de Dash
-│   components/            # Componentes individuales de Dash (tarjetas, gráficos, etc.)
-│   assets/                # Recursos estáticos (imágenes, CSS)
-│   .gitignore
-│   requirements.txt        # Dependencias de Python
-```
+El dashboard analiza los activos más representativos para una diversificación estratégica:
+
+*   **S&P 500 (SPX):** El índice bursátil más importante de los EE.UU.
+*   **EUR/USD:** El par de divisas líder del mercado Forex.
+*   **BTC/USD:** La criptomoneda referente frente al dólar.
+*   **XAU/USD:** El Oro, el activo refugio por excelencia a nivel global.
 
 ---
 
-## Fuentes de Datos
+## 🛠️ Stack Tecnológico y Modelos
 
-| Instrumento | URL del archivo Parquet |
-|------------|------------------------|
-| BTCUSD | `https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/btcusd-D1_2010-07-17_actualidad.parquet` |
-| EURUSD | `https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/eurusd-D1_2000-01-03_actualidad.parquet` |
-| SPX (S&P 500) | `https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/sp500-D1_2000-01-03_actualidad.parquet` |
-| XAUUSD | `https://raw.githubusercontent.com/aliskairraul/Actualiza-Data-Instrumentos/main/db/xauusd-D1_2000-01-03_actualidad.parquet` |
+Hemos implementado un conjunto robusto de librerías para cubrir diversas arquitecturas de predicción:
 
-Los archivos de predicciones de los modelos se encuentran en el repositorio **Inferencias_instrumentos_dic_2025** y siguen una estructura de URL similar.
-
----
-
-## Estrategia de Back‑testing
-
-1. **Capital inicial**: $10 000, dividido equitativamente entre los cuatro instrumentos principales.
-2. **Decisión diaria**:
-   - Cada modelo vota **Invertir** o **No invertir**.
-   - Si al menos un modelo vota *Invertir*, el capital disponible para ese instrumento se reparte equitativamente entre los modelos que votaron.
-   - La votación mayoritaria determina la dirección (larga/corta). Si la votación está dividida, se asigna una fracción proporcional del capital al lado ganador.
-3. **Ejecución**:
-   - Una operación por instrumento al día.
-   - Se contabilizan los costos de transacción.
-4. **Métricas**:
-   - Tasa de acierto, beneficio acumulado, número de operaciones diarias y proyección anualizada.
+*   **Machine Learning (Clásicos & Ensembles)**:
+    *   **Sklearn**: Base para preprocesamiento y modelos tradicionales.
+    *   **LightGBM**: Algoritmos de gradiente rápido.
+    *   **XGBoost**: Clasificación de alto rendimiento.
+*   **Deep Learning (Redes Neuronales)**:
+    *   **PyTorch**: Modelos de redes neuronales personalizadas.
+    *   **TensorFlow**: Implementaciones robustas para series temporales.
 
 ---
 
-## Primeros Pasos
+## ⚙️ Arquitectura del Sistema (El Flujo)
 
-### Requisitos Previos
+Dada la complejidad del pipeline, el proyecto se divide en **3 subsistemas independientes**:
 
-- Python 3.9+ (probado en 3.11)
-- `pip` o `conda`
+1.  **Obtención de Datos**: Repositorio [`Actualiza-Data-Instrumentos`](https://github.com/aliskairraul/Actualiza-Data-Instrumentos). Realiza web-scraping y peticiones API diariamente.
+2.  **Predicción (Inferencias)**: Repositorio [`Inferencias_instrumentos_dic_2025`](https://github.com/aliskairraul/Inferencias_instrumentos_dic_2025). Procesa la data con modelos pesados (TensorFlow/PyTorch) y persiste los resultados en Parquet.
+3.  **Visualización (Este Repositorio)**: El Dashboard de Dash que consume las inferencias y ejecuta el motor de backtesting dinámico.
 
-### Instalación
+---
 
+## 🧠 Estrategia de Backtesting y Lógica de Decisión
+
+La rentabilidad se busca a través de una gestión de riesgos disciplinada:
+
+*   **Capital Inicial**: Simulamos con **$10,000**, distribuidos equitativamente entre los 4 instrumentos.
+*   **Votación por Mayoría**: Cada librería emite un "voto". Si hay consenso, se opera con el capital disponible para ese activo.
+*   **Gestión de Dirección**: En casos de votos divididos (ej. 3 al alza, 2 a la baja), se opera proporcionalmente a la fuerza del consenso (ej. 20% al alza).
+*   **Filtro de Seguridad**: No se opera si la probabilidad estimada por los modelos no alcanza el unbral óptimo.
+
+> [!IMPORTANT]
+> Los modelos predicen la dirección del precio para el **día siguiente**. El backtest contempla una única operación diaria por instrumento, incluyendo costos operativos.
+
+---
+
+## 📊 Componentes del Dashboard
+
+La aplicación se estructura en 6 bloques principales de información:
+
+1.  **Composición Portafolio (Dona)**: Visualiza la distribución actual del capital. En el centro el Capital Actual e Inicial de la simulación.
+2.  **Performance Portafolio**: Métricas clave como Profit %, WinRate (Tasa de Aciertos) y Proyección Anualizada.
+3.  **Métricas por Instrumento**: Comparativa de la variación del precio real vs. el profit generado por la estrategia.
+4.  **Trades por Instrumento**: Detalle cuantitativo de operaciones y aciertos por cada activo.
+5.  **Evolución Diaria**: 
+    *   *Patrimonio*: Curva de crecimiento de cada sub-cartera.
+    *   *Modelo Vs Portafolio*: Comparativa directa entre un modelo individual y la estrategia diversificada.
+6.  **Transacciones Diarias**: Registro detallado día a día de trades y aciertos.
+
+---
+
+## 🚀 Pasos para la Ejecución
+
+### 1. Clonar el repositorio
 ```bash
-# Clonar el repositorio
 git clone https://github.com/aliskairraul/MachinneLearningBacktesterDic2025.git
 cd MachinneLearningBacktesterDic2025
+```
 
-# Instalar dependencias
+### 2. Instalación de dependencias
+```bash
 pip install -r requirements.txt
 ```
 
-### Ejecutar el Dashboard
-
+### 3. Ejecutar el Dashboard
 ```bash
 python main.py
 ```
-
-Abrir el navegador y navegar a `http://127.0.0.1:8050`.
-
----
-
-## Extender el Proyecto
-
-- **Añadir nuevos instrumentos**: Actualizar el diccionario de fuentes de datos en `utils.py` y agregar las entradas correspondientes en el layout del dashboard.
-- **Integrar modelos adicionales**: Implementar un nuevo script de inferencia, guardar las predicciones en formato Parquet y referenciarlas en el mapa de URLs de predicciones.
-- **Personalizar estilo visual**: Modificar `assets/styles.css` o crear nuevos componentes de Dash.
+*Acceder a través de `http://127.0.0.1:8050`*
 
 ---
 
-## Contribuir
+## 🎥 Visualización del Proyecto
 
-¡Las contribuciones son bienvenidas! Siga estos pasos:
-1. Haga un fork del repositorio.
-2. Cree una rama de característica (`git checkout -b feature/tu‑característica`).
-3. Realice commits con mensajes claros.
-4. Abra un pull request describiendo la mejora.
+![App Pantalla Inicial](assets/app_pantalla_inicial.png)
+*Vista principal al cargar la aplicación.*
 
----
-
-## Licencia
-
-Este proyecto se publica bajo la **Licencia MIT**. Consulte el archivo `LICENSE` para más detalles.
-
----
-
-## Contacto
-
-- **Autor**: *Aliskair Rosríguez*
-- **GitHub**: https://github.com/aliskairraul
-- **Email**: aliskairraul@gmail.com
-- **Desplegado**: https://ef5576ef-9622-420c-8f49-8e5f7facc205.plotly.app
-
-## Flujo del proyecto
+![Seleccion de Fechas](assets/app_seleccionando_fechas.png)
+*Componente interactivo para ajuste de periodos de estudio.*
 
 ![Flujo del proyecto](assets/flujo_proyecto.png)
-
-*Diagrama que muestra la interacción entre los repositorios de datos, inferencias y la aplicación Dash.*
-
+*Diagrama de interacción entre los 3 repositorios.*
 
 ---
 
-*Potencie sus decisiones de inversión con información basada en datos y modelos de machine‑learning de última generación.*
+## 🤝 Contacto y Portafolio
+
+*   **LinkedIn**: [Aliskair Rodriguez](https://www.linkedin.com/in/aliskair-rodriguez-782b3641/)
+*   **GitHub**: [@aliskairraul](https://github.com/aliskairraul)
+*   **Email**: [aliskairraul@gmail.com](mailto:aliskairraul@gmail.com)
+*   **Web/Portfolio**: [aliskairraul.github.io](https://aliskairraul.github.io)
+*   **Despliegue Live**: [Plotly Cloud Link](https://ef5576ef-9622-420c-8f49-8e5f7facc205.plotly.app)
+
+---
+*Desarrollado con ❤️ para el análisis avanzado de mercados financieros.*

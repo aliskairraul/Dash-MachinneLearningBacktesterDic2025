@@ -4,7 +4,7 @@ from utils.utils import colores_hex
 
 
 
-def returned_component_performance(df_back_spx: pl.DataFrame, df_back_eur: pl.DataFrame, df_back_btc: pl.DataFrame, df_back_xau: pl.DataFrame):
+def returned_component_performance(df_back_spx: pl.DataFrame, df_back_eur: pl.DataFrame, df_back_btc: pl.DataFrame, df_back_xau: pl.DataFrame) -> html.Div:
     
     monto_portafolio = df_back_btc["Monto_fin_dia"][-1] + df_back_eur["Monto_fin_dia"][-1] \
                        + df_back_xau["Monto_fin_dia"][-1] + df_back_spx["Monto_fin_dia"][-1]                   

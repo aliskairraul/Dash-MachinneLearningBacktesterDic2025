@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import polars as pl
 from utils.utils import colores_hex
 
-def returned_tabla_gde_elegido(df_trades_aciertos: pl.DataFrame, df_elegido: pl.DataFrame, nombre_elegido: str):
+def returned_tabla_gde_elegido(df_trades_aciertos: pl.DataFrame, df_elegido: pl.DataFrame, nombre_elegido: str) -> dcc.Graph:
     df_elegido = df_elegido.select(["date", "operaciones", "aciertos"]) 
     df_elegido.columns = ["date", f"Trades-{nombre_elegido}", f"✅-{nombre_elegido}"]
     df = df_trades_aciertos.select(["date", "Trades_Portafolio", "✅_Portafolio"])
@@ -37,8 +37,6 @@ def returned_tabla_gde_elegido(df_trades_aciertos: pl.DataFrame, df_elegido: pl.
         )
     )])
 
-    # Equal width for all columns. Date was taking too much space, this forces equality.
-    # We can adjust ratios if needed (e.g., date=1, others=1).
     fig.update_traces(columnwidth=[1]*len(df.columns))
 
     fig.update_layout(

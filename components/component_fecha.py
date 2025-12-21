@@ -3,7 +3,7 @@ import polars as pl
 from datetime import datetime, timedelta
 
 
-def returned_date_component(min_date: datetime.date, max_date: datetime.date, id_componente: str, inicio: bool = True):
+def returned_date_component(min_date: datetime.date, max_date: datetime.date, id_componente: str, inicio: bool = True) -> html.Div:
     min_date = min_date if inicio else min_date + timedelta(days=7)
     max_date = max_date if not inicio else max_date - timedelta(days=7)
     fecha = min_date if inicio else max_date
