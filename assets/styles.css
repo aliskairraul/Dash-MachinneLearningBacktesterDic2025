@@ -111,6 +111,7 @@ body {
     flex-direction: row;
     width: 100%;
     padding-top: 1em;
+    align-items: center;
 }
 
 #area-fechas {
@@ -119,8 +120,31 @@ body {
     display: flex;
     flex-direction: row;
     gap: 0.1em;
+    align-items: center;
     /* justify-content:space-between; */
     /* background-color: var(--primary-color); */
+}
+
+#component-drop-estrategia {
+    flex: 3;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 0.7em;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 1em;
+}
+
+#place-estrategia {
+    flex: 1;
+    font-size: 1.1em;
+    text-align: end;
+    margin: 0;
+}
+
+#drop-estrategias {
+    flex: 2;
 }
 
 #radioitems {

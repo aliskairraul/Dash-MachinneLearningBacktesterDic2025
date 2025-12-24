@@ -1,12 +1,18 @@
 from dash import dcc
 import plotly.graph_objects as go
 import polars as pl
+from functions.backtesting import evolucion
 from utils.utils import colores_hex
 
-def returned_tabla_gde_instrumentos(df_trades_aciertos_diarios: pl.DataFrame) -> dcc.Graph:
-    df = df_trades_aciertos_diarios.select(["date", "Trades-SP-500", "✅-SP-500", "Trades-EUR", "✅-EUR", "Trades-BTC", "✅-BTC", "Trades-XAU", "✅-XAU"])
-    df = df.rename({"date": "Fecha"})
-    
+def returned_tabla_gde_instrumentos(df_trades: pl.DataFrame, estrategia: str) -> dcc.Graph:
+    if estrategia == "Individual":
+        df = df_trades.select(["date", "spx_trades", "spx_wins", "eur_trades", "eur_wins", "btc_trades", "btc_wins", "xau_trades", "xau_wins"])
+    else:
+        df = df_trades.select(["date", "spx_mayoria_trades", "spx_mayoria_wins", "eur_mayoria_trades", "eur_mayoria_wins", "btc_mayoria_trades", "btc_mayoria_wins", "xau_mayoria_trades", "xau_mayoria_wins"])
+               
+    df.columns = ["Fecha", "trades SP-500", "✅-SP-500", "trades EUR", "✅-EUR", "trades BTC", "✅-BTC", "trades XAU", "✅-XAU"]
+    df = df.sort("Fecha", descending=True)
+
     cells_colors = []
     for col in df.columns:
         if "SP-500" in col:

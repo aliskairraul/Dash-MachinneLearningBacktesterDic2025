@@ -44,66 +44,32 @@ Dada la complejidad del pipeline, el proyecto se divide en **3 subsistemas indep
 
 ---
 
-## 🧠 Estrategia de Backtesting y Lógica de Decisión
+## 🧠 Metodologías de Backtesting
 
-La rentabilidad se busca a través de una gestión de riesgos disciplinada:
+La aplicación permite evaluar el rendimiento del capital mediante tres enfoques estratégicos distintos, adaptables a diferentes perfiles de riesgo:
 
-*   **Capital Inicial**: Simulamos con **$10,000**, distribuidos equitativamente entre los 4 instrumentos.
-*   **Votación por Mayoría**: Cada librería emite un "voto". Si hay consenso, se opera con el capital disponible para ese activo.
-*   **Gestión de Dirección**: En casos de votos divididos (ej. 3 al alza, 2 a la baja), se opera proporcionalmente a la fuerza del consenso (ej. 20% al alza).
-*   **Filtro de Seguridad**: No se opera si la probabilidad estimada por los modelos no alcanza el unbral óptimo.
+*   **1. Estrategia Individual**: 
+    Se aísla el comportamiento y riesgo de cada modelo dentro del portafolio. Por lo que la decisión de inversión de cada modelo se ejecuta sin tener pendiente el resto de los modelos dentro del instrumento específico.(ej. S&P 500 con la librería TensorFlow). El capital total se asigna a este modelo para validar su capacidad predictiva y rentabilidad en solitario frente al mercado, sería el capital disponible del Instrumento S&P 500 dividido entre el número de modelos en el mismo (independientemente de que ese dia los demas eligan invertir o no).
+*   **2. Mayoría Ponderada (Consenso Dinámico)**: 
+    Funciona como un sistema de votación democrática entre todas las librerías activas. El tamaño de la posición se ajusta proporcionalmente a la fuerza del consenso. Si existe división (ej. 3 al alza vs 2 a la baja), se opera con una fracción del capital (ej. 20%) reflejando la cautela ante la falta de unanimidad.  De haber unanimidad (así sea de un Voto) se invierte el 100% del Capital disponible para ese instrumento
+*   **3. Mayoría Absoluta (Alta Convicción)**: 
+    Similar al consenso, pero con una ejecución más agresiva. Siempre que una dirección gane la votación, se invierte la totalidad del monto disponible para ese activo en esa dirección, maximizando el aprovechamiento de las tendencias identificadas por el bloque de modelos.
 
-> [!IMPORTANT]
-> Los modelos predicen la dirección del precio para el **día siguiente**. El backtest contempla una única operación diaria por instrumento, incluyendo costos operativos.
-
----
-
-## 📊 Componentes del Dashboard
-
-La aplicación se estructura en 6 bloques principales de información:
-
-1.  **Composición Portafolio (Dona)**: Visualiza la distribución actual del capital. En el centro el Capital Actual e Inicial de la simulación.
-2.  **Performance Portafolio**: Métricas clave como Profit %, WinRate (Tasa de Aciertos) y Proyección Anualizada.
-3.  **Métricas por Instrumento**: Comparativa de la variación del precio real vs. el profit generado por la estrategia.
-4.  **Trades por Instrumento**: Detalle cuantitativo de operaciones y aciertos por cada activo.
-5.  **Evolución Diaria**: 
-    *   *Patrimonio*: Curva de crecimiento de cada sub-cartera.
-    *   *Modelo Vs Portafolio*: Comparativa directa entre un modelo individual y la estrategia diversificada.
-6.  **Transacciones Diarias**: Registro detallado día a día de trades y aciertos.
+### Lógica de Operación
+*   **Gestión de Capital**: Partimos de un capital inicial de **$10,000**, diversificado equitativamente entre los 4 instrumentos principales.
+*   **Filtro de Probabilidad**: No se ejecutan órdenes si el umbral de confianza de la predicción no supera los niveles de seguridad establecidos, priorizando la preservación del capital sobre la sobreoperativa.
+*   **Costos Operativos**: El motor de backtesting descuenta automáticamente spreads y comisiones para ofrecer resultados realistas.
 
 ---
 
-## 🚀 Pasos para la Ejecución
+## 🚀 Próximos Pasos y Evolución
 
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com/aliskairraul/MachinneLearningBacktesterDic2025.git
-cd MachinneLearningBacktesterDic2025
-```
+El proyecto se encuentra en una fase de optimización continua. Nuestras líneas de desarrollo futuro incluyen:
 
-### 2. Instalación de dependencias
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Ejecutar el Dashboard
-```bash
-python main.py
-```
-*Acceder a través de `http://127.0.0.1:8050`*
-
----
-
-## 🎥 Visualización del Proyecto
-
-![App Pantalla Inicial](assets/app_pantalla_inicial.png)
-*Vista principal al cargar la aplicación.*
-
-![Seleccion de Fechas](assets/app_seleccionando_fechas.png)
-*Componente interactivo para ajuste de periodos de estudio.*
-
-![Flujo del proyecto](assets/flujo_proyecto.png)
-*Diagrama de interacción entre los 3 repositorios.*
+*   **🔍 Monitoreo de Consistencia**: Análisis de la estabilidad del WinRate mes a mes para identificar qué modelos (Librería/Instrumento) presentan un comportamiento más robusto en el tiempo.
+*   **🌐 Expansión del Portafolio**: Incorporación de nuevos instrumentos (Forex, Materias Primas) que no presenten interdependencia con los actuales para fortalecer la robustez de la diversificación.
+*   **⚡ Transición a Tiempo Real**: Evolución hacia infraestructuras de baja latencia que permitan realizar inferencias y ejecuciones de manera inmediata, superando las limitaciones de los flujos de trabajo programados.
+*   **🤖 Integración con Bots de Trading**: Desarrollo de APIs de comunicación con terminales de trading para automatizar la ejecución de órdenes basada en las señales de los modelos, combinando análisis cuantitativo con gestión de riesgo avanzada.
 
 ---
 

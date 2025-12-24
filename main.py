@@ -5,12 +5,29 @@ from datetime import datetime, timezone, timedelta
 from components.component_drop import returned_drop_component
 from components.component_radioitems import returned_radioitems_component
 from components.component_fecha import returned_date_component
+from components.component_drop_estrategia import returned_drop_estrategia
 
 from functions.callbacks_cargarData_cerrarModal import cargar_data, cerrar_modal, marcar_datos_listos
-from functions.callback_actualizar_componentes import actualizar_componentes
+from functions.callback_actualizar_componentes import actualizar_componentes, cerrar_modal_error
+# from functions.callback_error_fechas import cerrar_modal_error
 
 inicio_operaciones = datetime(2025, 8, 1).date()
 hoy = datetime.now(timezone.utc).date()
+
+# 🪟 Modal de error por fechas
+modal_error_fechas = dbc.Modal(
+    [
+        dbc.ModalHeader(dbc.ModalTitle("⚠️ Error en Fechas")),
+        dbc.ModalBody("La fecha de fin no puede ser anterior o igual a la fecha de inicio. Por favor, revisa el rango seleccionado."),
+        dbc.ModalFooter(
+            dbc.Button("Aceptar", id="btn-cerrar-modal-error", className="ms-auto", n_clicks=0)
+        ),
+    ],
+    id="modal-error-fechas",
+    is_open=False,
+    centered=True,
+    backdrop="static",
+)
 
 # 🪟 Modal de carga
 modal_loading = dbc.Modal(
@@ -52,6 +69,7 @@ app.layout = html.Div([
     store_es_primera_carga,
     store_drop_value,
     store_ready,
+    modal_error_fechas,
 
     html.Div([
         html.Div(" 🧠 Machinne Learning Trading BACKTESTER", id="titulo-encabezado"),
@@ -62,7 +80,8 @@ app.layout = html.Div([
         html.Div([
             html.Div(returned_date_component(min_date=inicio_operaciones, max_date=hoy, id_componente="date-picker-single-ini", inicio=True), id="fecha-inicio"),
             html.Div(returned_date_component(min_date=inicio_operaciones, max_date=hoy, id_componente="date-picker-single-fin", inicio=False), id="fecha-fin")
-        ],id="area-fechas"),
+        ], id="area-fechas"),
+        returned_drop_estrategia(),
         returned_radioitems_component(),
     ], id="area-fechas-radioitems"),
 
@@ -107,7 +126,7 @@ app.layout = html.Div([
                 html.Div([
                     html.Div("Evolución diaria de la Cartera", id="titulo-linechart", className="titulo-cajones"),
                     html.Div(id="grafico-linechart"),
-                ],id="der-sup-2", className="cajones")
+                ], id="der-sup-2", className="cajones")
             ], id="area-der-sup"),
             html.Div([
                 html.Div([
@@ -124,6 +143,6 @@ app.layout = html.Div([
     ], id="area-trabajo")
 ], id="area-app")
 
-        
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -4,10 +4,13 @@ import plotly.graph_objects as go
 from utils.utils import colores_hex
 
 
-def returned_barras_winrate(df_summary_winrate: pl.DataFrame) -> dcc.Graph:
-    df_summary_winrate = df_summary_winrate.filter(pl.col("Instrumento").is_in(["S&P 500", "EURUSD", "BTCUSD","XAUUSD"]))
-    instrumentos = df_summary_winrate["Instrumento"].to_list()
-    winrates = df_summary_winrate["Winrate"].to_list()
+def returned_barras_winrate(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame) -> dcc.Graph:
+    rate_spx = round((df_spx["wins_dia"].sum() / df_spx["trades_dia"].sum() * 100), 2) if df_spx["trades_dia"].sum() > 0 else 0
+    rate_eur = round((df_eur["wins_dia"].sum() / df_eur["trades_dia"].sum() * 100), 2) if df_eur["trades_dia"].sum() > 0 else 0
+    rate_btc = round((df_btc["wins_dia"].sum() / df_btc["trades_dia"].sum() * 100), 2) if df_btc["trades_dia"].sum() > 0 else 0
+    rate_xau = round((df_xau["wins_dia"].sum() / df_xau["trades_dia"].sum() * 100), 2) if df_xau["trades_dia"].sum() > 0 else 0
+    instrumentos = ["S&P 500", "EURUSD", "BTCUSD","XAUUSD"]
+    winrates = [rate_spx, rate_eur, rate_btc, rate_xau]
     min_winrate = min(winrates)
     max_winrate = max(winrates)
 

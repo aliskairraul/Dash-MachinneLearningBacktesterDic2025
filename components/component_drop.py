@@ -9,7 +9,7 @@ def returned_drop_component(deactive_tab: bool, value_drop: str) -> html.Div:
     
     drop_component = html.Div(
         [
-            html.P("Select Combination", id="placeholder", style={"color": color_placeholder, "font-weight": font_weight_placehold} ),
+            html.P("Combinaciones", id="placeholder", style={"color": color_placeholder, "font-weight": font_weight_placehold} ),
             dcc.Dropdown(
                 id="drop-down",
                 placeholder="Combinación Instrumento/Librería",   

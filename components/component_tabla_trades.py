@@ -4,11 +4,25 @@ import plotly.graph_objects as go
 from utils.utils import colores_hex
 
 
-def returned_tablas_trades(df_summary_winrate: pl.DataFrame) -> dcc.Graph:
-    df_summary_winrate = df_summary_winrate.filter(pl.col("Instrumento").is_in(["S&P 500", "EURUSD", "BTCUSD","XAUUSD", "PORTAFOLIO"]))    
-    operaciones = df_summary_winrate["Operaciones"].to_list()
-    aciertos = df_summary_winrate["Aciertos"].to_list()
-    instrumentos = df_summary_winrate["Instrumento"].to_list()
+def returned_tablas_trades(df_trades: pl.DataFrame, estrategia: str) -> dcc.Graph:
+    # df, _ = portafolio_values(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
+    # operaciones = [df["spx_trades"].sum(), df["eur_trades"].sum(), df["btc_trades"].sum(), df["xau_trades"].sum(), df["Portafolio Trades"].sum()]
+    # aciertos = [df["spx_wins"].sum(), df["eur_wins"].sum(), df["btc_wins"].sum(), df["xau_wins"].sum(), df["Portafolio Wins"].sum()]
+    operaciones = []
+    aciertos = []
+    if estrategia == "Individual":
+        operaciones = [df_trades["spx_trades"].sum(), df_trades["eur_trades"].sum(), df_trades["btc_trades"].sum(), df_trades["xau_trades"].sum(), 
+                       df_trades["Portafolio Trades"].sum()]
+        aciertos = [df_trades["spx_wins"].sum(), df_trades["eur_wins"].sum(), df_trades["btc_wins"].sum(), df_trades["xau_wins"].sum(), 
+                    df_trades["Portafolio Wins"].sum()]               
+    else:
+        operaciones = [df_trades["spx_mayoria_trades"].sum(), df_trades["eur_mayoria_trades"].sum(), df_trades["btc_mayoria_trades"].sum(),
+                       df_trades["xau_mayoria_trades"].sum(), df_trades["Portafolio Trades Mayoria"].sum()]
+        
+        aciertos = [df_trades["spx_mayoria_wins"].sum(), df_trades["eur_mayoria_wins"].sum(), df_trades["btc_mayoria_wins"].sum(),
+                    df_trades["xau_mayoria_wins"].sum(), df_trades["Portafolio Wins Mayoria"].sum()]               
+    
+    instrumentos = ["S&P 500", "EURUSD", "BTCUSD","XAUUSD", "PORTAFOLIO"]
 
     row_colors = [colores_hex["spx"], colores_hex["eurusd"], colores_hex["btcusd"], colores_hex["xauusd"], colores_hex["portafolio"]]
     

@@ -4,13 +4,13 @@ import plotly.graph_objects as go
 from utils.utils import colores_hex   # claves del diccionario "eurusd", "btcusd", "xauusd", "spx"
 
 
-def returned_dona_overview(df_back_spx: pl.DataFrame, df_back_eur: pl.DataFrame, df_back_btc: pl.DataFrame, df_back_xau: pl.DataFrame) -> dcc.Graph:
-    monto_btc = round((df_back_btc["Monto_fin_dia"][-1]), 2)
-    monto_eur = round((df_back_eur["Monto_fin_dia"][-1]), 2)
-    monto_spx = round((df_back_spx["Monto_fin_dia"][-1]), 2)
-    monto_xau = round((df_back_xau["Monto_fin_dia"][-1]), 2)
+def returned_dona_overview(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame) -> dcc.Graph:
+    monto_btc = round((df_btc["Monto_fin_dia"][-1]), 2)
+    monto_eur = round((df_eur["Monto_fin_dia"][-1]), 2)
+    monto_spx = round((df_spx["Monto_fin_dia"][-1]), 2)
+    monto_xau = round((df_xau["Monto_fin_dia"][-1]), 2)
     monto_portafolio = int(monto_btc + monto_eur + monto_spx + monto_xau)
-    monto_inicial = int(df_back_btc["Monto_ini_dia"][0] + df_back_eur["Monto_ini_dia"][0] + df_back_spx["Monto_ini_dia"][0] + df_back_xau["Monto_ini_dia"][0])
+    monto_inicial = int(df_btc["Monto_ini_dia"][0] + df_eur["Monto_ini_dia"][0] + df_spx["Monto_ini_dia"][0] + df_xau["Monto_ini_dia"][0])
 
     # Determinar color del monto portafolio
     color_portafolio = colores_hex["up"] if monto_portafolio > monto_inicial else colores_hex["down"]

@@ -1,27 +1,25 @@
 import polars as pl
 from dash import html
+from functions.backtesting import evolucion
 from utils.utils import colores_hex
 
 
 
-def returned_component_performance(df_back_spx: pl.DataFrame, df_back_eur: pl.DataFrame, df_back_btc: pl.DataFrame, df_back_xau: pl.DataFrame) -> html.Div:
-    
-    monto_portafolio = df_back_btc["Monto_fin_dia"][-1] + df_back_eur["Monto_fin_dia"][-1] \
-                       + df_back_xau["Monto_fin_dia"][-1] + df_back_spx["Monto_fin_dia"][-1]                   
-    monto_inicial = df_back_btc["Monto_ini_dia"][0] + df_back_eur["Monto_ini_dia"][0] + df_back_spx["Monto_ini_dia"][0] + df_back_xau["Monto_ini_dia"][0]
-    
-    variacion_portafolio = round(((monto_portafolio - monto_inicial) / monto_inicial * 100), 2)
-    dias_operados = len(df_back_btc)    
-    
-    total_operaciones = df_back_btc["operaciones"].sum() + df_back_eur["operaciones"].sum() + df_back_xau["operaciones"].sum() + df_back_spx["operaciones"].sum()
-    total_aciertos = df_back_btc["aciertos"].sum() + df_back_eur["aciertos"].sum() + df_back_xau["aciertos"].sum() + df_back_spx["aciertos"].sum()
-    winrate_portafolio = round((total_aciertos / total_operaciones * 100),2)  if total_operaciones > 0 else 0
+def returned_component_performance(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame,
+                                   df_xau: pl.DataFrame, df_trades: pl.DataFrame, estrategia: str) -> html.Div:
+    df_evolucion = evolucion(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
+    dias = df_evolucion.shape[0]
+    profit = round(((df_evolucion["Monto_fin"][-1] - df_evolucion["Monto_ini"][0]) / df_evolucion["Monto_ini"][0] * 100), 2)
+    proyeccion_anual = round(profit * 365 / dias, 2)
 
-    proyeccion_anual = round((variacion_portafolio / dias_operados * 365), 2)
+    trades = df_trades["Portafolio Trades"].sum() if estrategia == "Individual" else df_trades["Portafolio Trades Mayoria"].sum() 
+    wins = df_trades["Portafolio Wins"].sum() if estrategia == "Individual" else df_trades["Portafolio Wins Mayoria"].sum()
+
+    winrate = round((wins / trades * 100), 2) if trades > 0 else 0
 
     # Lógica de colores y símbolos
-    color_profit = colores_hex["up"] if variacion_portafolio > 0 else colores_hex["down"]
-    simbolo_profit = '▲' if variacion_portafolio > 0 else '▼'
+    color_profit = colores_hex["up"] if profit > 0 else colores_hex["down"]
+    simbolo_profit = '▲' if profit > 0 else '▼'
 
     # Estilos comunes
     estilo_bloque = {
@@ -37,19 +35,19 @@ def returned_component_performance(df_back_spx: pl.DataFrame, df_back_eur: pl.Da
     bloque_1 = html.Div([
         html.Div([
             html.Span("Win Rate ", style={'fontSize': '1.1rem', 'fontWeight': 'bold'}),
-            html.Span(f"{winrate_portafolio}%", style={'fontSize': '1.3rem', 'fontWeight': 'bold'})
+            html.Span(f"{winrate}%", style={'fontSize': '1.3rem', 'fontWeight': 'bold'})
         ], style={'color': '#719CC6'}),
-        html.Div(f"Trades {total_operaciones}", style={'fontSize': '0.9rem', 'fontWeight': 'bold', 'color': 'white'})
+        html.Div(f"Trades {trades}", style={'fontSize': '0.9rem', 'fontWeight': 'bold', 'color': 'white'})
     ], style=estilo_bloque)
 
     # Bloque 2: Profit & Days
     bloque_2 = html.Div([
         html.Div([
             html.Span("Profit% ", style={'fontSize': '1.1rem', 'fontWeight': 'bold', 'color': 'white'}),
-            html.Span(f"{simbolo_profit} {variacion_portafolio}%", style={'fontSize': '1.3rem', 'fontWeight': 'bold', 'color': color_profit})
+            html.Span(f"{simbolo_profit} {profit}%", style={'fontSize': '1.3rem', 'fontWeight': 'bold', 'color': color_profit})
         ]),
         # html.Div(f"Dias {dias_operados}", style={'fontSize': '0.9rem', 'color': '#8F9BA3'})
-        html.Div(f"Dias {dias_operados}", style={'fontSize': '0.9rem', 'fontWeight': 'bold', 'color': 'white'})
+        html.Div(f"Dias {dias}", style={'fontSize': '0.9rem', 'fontWeight': 'bold', 'color': 'white'})
     ], style=estilo_bloque)
 
     # Bloque 3: Annual Projection

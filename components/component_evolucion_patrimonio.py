@@ -1,14 +1,16 @@
 import polars as pl
 from dash import html, dcc
 import plotly.graph_objects as go
+from functions.backtesting import evolucion
 
 
-def returned_current_equity(df_evolution_capital: pl.DataFrame) -> dcc.Graph:
+def returned_evolucion_patrimonio(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc, df_xau) -> dcc.Graph:
+    df = evolucion(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
-        x=df_evolution_capital["date"],
-        y=df_evolution_capital["Portafolio"],
+        x=df["date"],
+        y=df["Monto_ini"],
         fill='tozeroy',
         mode='lines',
         line=dict(color='#79CA7C', width=2),

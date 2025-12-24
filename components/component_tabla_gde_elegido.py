@@ -3,13 +3,21 @@ import plotly.graph_objects as go
 import polars as pl
 from utils.utils import colores_hex
 
-def returned_tabla_gde_elegido(df_trades_aciertos: pl.DataFrame, df_elegido: pl.DataFrame, nombre_elegido: str) -> dcc.Graph:
-    df_elegido = df_elegido.select(["date", "operaciones", "aciertos"]) 
+def returned_tabla_gde_elegido(df_trades: pl.DataFrame, df_elegido: pl.DataFrame, nombre_elegido: str, estrategia: str) -> dcc.Graph:
+    df = pl.DataFrame()
+    if estrategia == "Individual":
+        df = df_trades.select(["date", "Portafolio Trades", "Portafolio Wins"]) 
+    else:
+        df = df_trades.select(["date", "Portafolio Trades Mayoria", "Portafolio Wins Mayoria"])
+
+    df.columns = ["date", "Trades_Portafolio", "✅_Portafolio"]
+
+    df_elegido = df_elegido.select(["date", "trades_dia", "wins_dia"]) 
     df_elegido.columns = ["date", f"Trades-{nombre_elegido}", f"✅-{nombre_elegido}"]
-    df = df_trades_aciertos.select(["date", "Trades_Portafolio", "✅_Portafolio"])
+
     df = df.join(df_elegido, on="date", how="left", coalesce=True)
-    df = df.fill_null(strategy="forward")
-    df = df.rename({"date": "Fecha"})
+    df = df.fill_null(strategy="zero")
+    df = df.rename({"date": "Fecha"}).sort("Fecha", descending=True)
     
     cells_colors = []
     for col in df.columns:

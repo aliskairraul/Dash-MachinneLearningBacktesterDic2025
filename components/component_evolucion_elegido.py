@@ -1,17 +1,21 @@
 import polars as pl 
 from dash import dcc 
 import plotly.graph_objects as go 
+from functions.backtesting import evolucion
 from utils.utils import colores_hex
 from datetime import datetime
 
 fecha_inicio = datetime(2025, 8, 1).date()
 
 
-def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: pl.DataFrame, drop_value: str) -> dcc.Graph:
+def returned_evolucion_elegido(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame,
+                               df_elegido: pl.DataFrame, drop_value: str) -> dcc.Graph:
+    df = evolucion(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
+
     # Datos para el tooltip
-    dias = df_evolution_capital.shape[0]
-    trades_tooltip = df_elegido["operaciones"].sum()
-    aciertos_tooltip = df_elegido["aciertos"].sum()
+    dias = df.shape[0]
+    trades_tooltip = df_elegido["trades_dia"].sum()
+    aciertos_tooltip = df_elegido["wins_dia"].sum()
     winrate_tooltip = round((aciertos_tooltip / trades_tooltip * 100),2)  if trades_tooltip > 0 else 0    
     ganancia_tooltip = df_elegido["Monto_fin_dia"][-1] - df_elegido["Monto_ini_dia"][0]
     profit_tooltip = round(((ganancia_tooltip / df_elegido["Monto_ini_dia"][0]) * 100),2)
@@ -26,7 +30,7 @@ def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: p
     df_elegido = df_elegido.select(["date", "Monto_ini_dia"])
     df_elegido.columns = ["date", drop_value]
 
-    df_evolution_capital = df_evolution_capital.select(["date", "Portafolio"])
+    df_evolution_capital = df.select(["date", "Monto_ini"])
     df_evolution_capital = df_evolution_capital.join(df_elegido, on="date", how="left", coalesce=True)
     df_evolution_capital = df_evolution_capital.fill_null(strategy="forward")
 
@@ -36,7 +40,7 @@ def returned_evolucion_elegido(df_evolution_capital: pl.DataFrame, df_elegido: p
     # Portafolio Trace
     fig.add_trace(go.Scatter(
         x=df_evolution_capital["date"],
-        y=df_evolution_capital["Portafolio"],
+        y=df_evolution_capital["Monto_ini"],
         mode='lines',
         name='Portafolio',
         line=dict(color='#ab63fa')

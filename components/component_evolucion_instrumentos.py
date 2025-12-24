@@ -1,17 +1,18 @@
 import polars as pl 
 from dash import dcc 
-import plotly.graph_objects as go 
+import plotly.graph_objects as go
+from functions.backtesting import evolucion
 from utils.utils import colores_hex 
 
 
-# def returned_evolucion_instrumentos(df_back_spx: pl.DataFrame, df_back_eur: pl.DataFrame, df_back_btc: pl.DataFrame, df_back_xau: pl.DataFrame):
-def returned_evolucion_instrumentos(df_evolution_capital: pl.DataFrame) -> dcc.Graph:
+def returned_evolucion_instrumentos(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame) -> dcc.Graph:
+    df = evolucion(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
     fig = go.Figure()
 
     # BTCUSD Trace
     fig.add_trace(go.Scatter(
-        x=df_evolution_capital["date"],
-        y=df_evolution_capital["BTCUSD"],
+        x=df["date"],
+        y=df["btc_Monto_ini"],
         mode='lines',
         name='BTCUSD',
         line=dict(color=colores_hex['btcusd'])
@@ -19,8 +20,8 @@ def returned_evolucion_instrumentos(df_evolution_capital: pl.DataFrame) -> dcc.G
 
     # EURUSD Trace
     fig.add_trace(go.Scatter(
-        x=df_evolution_capital["date"],
-        y=df_evolution_capital["EURUSD"],
+        x=df["date"],
+        y=df["eur_Monto_ini"],
         mode='lines',
         name='EURUSD',
         line=dict(color=colores_hex['eurusd'])
@@ -28,8 +29,8 @@ def returned_evolucion_instrumentos(df_evolution_capital: pl.DataFrame) -> dcc.G
 
     # XAUUSD Trace
     fig.add_trace(go.Scatter(
-        x=df_evolution_capital["date"],
-        y=df_evolution_capital["XAUUSD"],
+        x=df["date"],
+        y=df["xau_Monto_ini"],
         mode='lines',
         name='XAUUSD',
         line=dict(color=colores_hex['xauusd'])
@@ -37,8 +38,8 @@ def returned_evolucion_instrumentos(df_evolution_capital: pl.DataFrame) -> dcc.G
 
     # SPX Trace
     fig.add_trace(go.Scatter(
-        x=df_evolution_capital["date"],
-        y=df_evolution_capital["SPX"],
+        x=df["date"],
+        y=df["spx_Monto_ini"],
         mode='lines',
         name='S&P 500',
         line=dict(color=colores_hex['spx'])

@@ -13,3 +13,5 @@ README_NEW_DRAFT.md
 README_inferencias.md
 ayuda.txt
 .gitignore
+.flake8
+prueba.ipynb

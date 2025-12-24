@@ -38,13 +38,25 @@ Dado lo complejo de manejar automatizadamente la recolección diaria de informac
 Descripción del Proyecto:
 Se entreno un modelo de cada Libreria para cada uno de los Instrumentos Financieros.  Los modelos se entrenaron y Testearon con data que llega hasta el 31-12-2024.   Luego fueron sometidos a prueba con data desde el 01/01/2025 hasta el 31/07/2025.  A partir del 01/08/2025 se comenzó con la prueba de los modelos con data nunca vista por los mismos.
 Los Modelos Solo Predicen la direccion del precio del dia siguiente, por lo que el backtest se hace en base a una única operación diaria posible, donde se contemplan sus respectivos costos de operacion.
-ESTRATEGIA UTILIZADA PARA EL BACKTEST
+CRITERIOS UTILIZADOS PARA EL BACKTEST
 Dado que para poder invertir se requiere actuar con cautela se invierte solo cuando el modelo tenga un factor de probabilidad (que cumpla una espectativa), con esto lo que te quiero decir es que es posible que despues de tomar el resultado de la predicción la decisión sea NO INVERTIR un dia determinado.
+Estrategia Indivudual:
+Pasos de la estrategia:
+    - Se partió con el Supuesto de un capital inicial de 10000$. El capital Inicial se dividió en 4 partes iguales (Una para cada Instrumento).
+    - A cada Modelo Específico le corresponde un porcentaje FIJO del monto disponible del Instrumento en cuestion.  Ejemplo: Si se tratase del Modelo S&P-500-solo_sklearn se revisan cuantos modelos hay para el S&P-500 (Independientemente de que ese dia predigan invertir o no), y cada modelo puede invertir (monto_disponible_instrumento / numero_modelos_del_instrumento) o en su defecto si es por lotaje este se ajusta en la proporcopn antes indicada.  
+Estrategia Mayoria Ponderada:   
 Pasos de la estrategia:
     - Se partió con el Supuesto de un capital inicial de 10000$. El capital Inicial se dividió en 4 partes iguales (Una para cada Instrumento).  
     - La logica del backtest es muy sencilla: Cada dia (por cada Instrumento Financiero), se revisa si hay algún modelo con la predicción de Invertir, De encontrarse modelos con intencion de invertir el capital disponible (en el momento y para ese instrumento) entre el numero de modelos que desean invertir, ejemplo si 3 modelos desean invertir se divide el capital en 3 partes iguales.  
     - Se hace votacion por mayoria, es decir, tomando en cuenta el ejemplo de 3 modelos, si todos deciden operar se hace una operacion con el total del Capital disponible (en el caso del Bitcoin) y con el lotaje Full establecido (en el caso de los otros instrumentos).
     - En caso de votacion dividida, ejemplo 3 Modelo eligen Subida y 2 eligen Bajada; se realiza 1 operacion en Subida con el 20% del capital disponible o lotaje respectivo.  Se toma en cuenta la proporcion de cada votante, si el 40% queria operar a la baja y el 60% al alza, entonces se opera el 20% al alza.
+Estrategia Mayoria :   
+Pasos de la estrategia:
+    - Casi igual a la estrategia `Mayoria Ponderada` pero siempre que haya decision de inversión se invierte la totalidad del Monto-Disponible o lotaje a favor de la Direccion que gane las votaciones.
+
+
+
+
 Aplicacion en Dash:
 La Aplicacion muestra 6 Cuadros de Información:
     - Composición Portafolio (incluye evolución del patrimonio): Se presenta en forma de Dona, donde cada color representa la parte del capital Total que en ese momento lleva cada Instrumento (al pasar el mouse por la dona muestra la información). En la parte central de la Dona en Grande aparece el Capital actual de la cartera de Inversion y el capital con que inicio la simulacion en la Fecha seleccionada.  Tome en cuenta que puede ajustar las fechas de principio y fin.
@@ -69,13 +81,12 @@ Proximos Pasos:
     - Utilizar la herramienta para seguimiento del comportamiento de la Cartera. Ir observando que modelo específico (libreria/Instrumento) es mas constante mes a mes en su Winrate
     - Estudio de nuevos Instrumentos Financieros, preferiblemente no interdependientes de los actuales a fin de aumentar el portafolio y diversificar riesgos
     - En caso de considerar operaciones reales se necesitaria disponer de plataforma donde los datos de cierre al instante de producirse y plataforma donde desplegar los modelos de Inferencias que realicen las mismas de manera inmediata. En este caso de estudio se hace con Github Actions, por lo que los workflows entran en cola para su ejecusión y esto sirve sólo para estudio.
-    - En caso de considerar operar debe combinar predicciones con Bots de Trading que se comunique mediante Api, y esto le daría mas control, ya que pudiera combinar esta informacion con estartegias de Trading tradicionales o ajustar el bot para detectar grandes dias de grandes volatilidades cierre operaciones sin tantas perdidas, lo que se traduciría en una mejor relación winrate/rentabilidad.
+    - En caso de considerar operar debe combinar predicciones con Bots de Trading que se comunique mediante Api, y esto le daría mas control, ya que pudiera combinar esta informacion con estartegias de Trading tradicionales o ajustar el bot para detectar dias de grandes volatilidades, cierre operaciones sin tantas perdidas, lo que se traduciría en una mejor relación winrate/rentabilidad.
 
 imagen: assets/app_pantalla_inicial.png   Imagen justo cuando termina de cargar la pagina
 imagen: assets/app_seleccionando_fechas   Imagen con el componente de la fecha desplegado
 
 
-ok.. ya la coloque publica y agregue el link al README....   El Flujo del Proyecto es el Siguiente:  Repositorio de Github `https://github.com/aliskairraul/Actualiza-Data-Instrumentos` que una vez por dia con webscraping y requests obtiene y graba data.  Segundo repositorio de Github `https://github.com/aliskairraul/Inferencias_instrumentos_dic_2025` que una vez al dia (2 horas despues del primero) substrae la data del primer repositorio la adecua y realiza las inferencias con las Librerias Sklearn, Lightgbm, Xgboost, PyTorch y Tensorflow y persiste las inferencias en archivos.    3) App de Dash( repositorio ) que al Arrancar (en un modal de entrada) hace requests a las inferencias transforma, hace Backtesting guarda los datos en un dcc.Store y muestra el Dashboard interactivo. 
 
-Despliegue de la App en Plotly Cloud: `https://ef5576ef-9622-420c-8f49-8e5f7facc205.plotly.app`
+Land page del proyecto: `https://aliskairraul.github.io/Dash-MachinneLearningBacktesterDic2025/`
 Repositorio de Github: `https://github.com/aliskairraul/Dash-MachinneLearningBacktesterDic2025`
