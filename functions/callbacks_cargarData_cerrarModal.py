@@ -37,7 +37,7 @@ def cerrar_modal(data):
     prevent_initial_call=True
 )
 def cargar_data(n):
-    obtener_data_github()
+    # obtener_data_github()
     datos = {}
 
     inferencias_btc = pl.read_parquet(paths_inferencias["BTCUSD"])

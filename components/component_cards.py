@@ -24,11 +24,11 @@ def retorna_card(df: pl.DataFrame, habiles_anio: int) -> html.Div:
         [
             html.P(f"Var Instrumento: {var_precio * 100:.2f}%", style={"color": "black"}),
             html.P([
-                html.Span("Profit % Modelos: ", style={"color": "black"}),
+                html.Span("Profit %: ", style={"color": "black"}),
                 html.Span(f"{'▲' if var_monto > 0 else '▼'}{var_monto * 100:.2f}%", style={"color": color})
             ]),
             html.P([
-                html.Span("Anual % Modelos: ", style={"color": "black"}),
+                html.Span("Anual %: ", style={"color": "black"}),
                 html.Span(f"{'▲' if var_anual > 0 else '▼'}{var_anual * 100:.2f}%", style={"color": color})
             ]),
         ], className="cards"
