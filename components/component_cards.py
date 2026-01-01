@@ -5,7 +5,8 @@ from utils.utils import colores_hex
 #  ✅   ❌  ▲  ▼
 
 
-def retorna_card(df: pl.DataFrame, habiles_anio: int) -> html.Div:
+def retorna_card(df: pl.DataFrame, habiles_anio: int, fecha_ini: datetime.date, fecha_fin: datetime.date) -> html.Div:
+    df = df.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
     dias_operados = df.shape[0]
     mask = df["date"] == df["date"].min()
     precio_inicial = df.filter(mask)["close"][0]

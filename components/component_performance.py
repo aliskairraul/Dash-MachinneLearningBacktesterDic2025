@@ -1,18 +1,26 @@
 import polars as pl
 from dash import html
+from datetime import datetime
 from functions.backtesting import evolucion
 from utils.utils import colores_hex
 
 
-
-def returned_component_performance(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame,
-                                   df_xau: pl.DataFrame, df_trades: pl.DataFrame, estrategia: str) -> html.Div:
+def returned_component_performance(df_spx: pl.DataFrame,
+                                   df_eur: pl.DataFrame,
+                                   df_btc: pl.DataFrame,
+                                   df_xau: pl.DataFrame,
+                                   df_trades: pl.DataFrame,
+                                   estrategia: str,
+                                   fecha_ini: datetime.date,
+                                   fecha_fin: datetime.date) -> html.Div:
     df_evolucion = evolucion(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
+    df_evolucion = df_evolucion.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
     dias = df_evolucion.shape[0]
     profit = round(((df_evolucion["Monto_fin"][-1] - df_evolucion["Monto_ini"][0]) / df_evolucion["Monto_ini"][0] * 100), 2)
     proyeccion_anual = round(profit * 365 / dias, 2)
 
-    trades = df_trades["Portafolio Trades"].sum() if estrategia == "Individual" else df_trades["Portafolio Trades Mayoria"].sum() 
+    df_trades = df_trades.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+    trades = df_trades["Portafolio Trades"].sum() if estrategia == "Individual" else df_trades["Portafolio Trades Mayoria"].sum()
     wins = df_trades["Portafolio Wins"].sum() if estrategia == "Individual" else df_trades["Portafolio Wins Mayoria"].sum()
 
     winrate = round((wins / trades * 100), 2) if trades > 0 else 0

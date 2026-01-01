@@ -8,9 +8,17 @@ from datetime import datetime
 fecha_inicio = datetime(2025, 8, 1).date()
 
 
-def returned_evolucion_elegido(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame,
-                               df_elegido: pl.DataFrame, drop_value: str) -> dcc.Graph:
+def returned_evolucion_elegido(df_spx: pl.DataFrame,
+                               df_eur: pl.DataFrame,
+                               df_btc: pl.DataFrame,
+                               df_xau: pl.DataFrame,
+                               df_elegido: pl.DataFrame,
+                               drop_value: str,
+                               fecha_ini: datetime.date,
+                               fecha_fin: datetime.date) -> dcc.Graph:
     df = evolucion(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
+    df = df.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+    df_elegido = df_elegido.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
 
     # Datos para el tooltip
     dias = df.shape[0]

@@ -2,12 +2,11 @@ import polars as pl
 from dash import dcc
 import plotly.graph_objects as go
 from utils.utils import colores_hex
+from datetime import datetime
 
-
-def returned_tablas_trades(df_trades: pl.DataFrame, estrategia: str) -> dcc.Graph:
-    # df, _ = portafolio_values(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
-    # operaciones = [df["spx_trades"].sum(), df["eur_trades"].sum(), df["btc_trades"].sum(), df["xau_trades"].sum(), df["Portafolio Trades"].sum()]
-    # aciertos = [df["spx_wins"].sum(), df["eur_wins"].sum(), df["btc_wins"].sum(), df["xau_wins"].sum(), df["Portafolio Wins"].sum()]
+def returned_tablas_trades(df_trades: pl.DataFrame, estrategia: str, 
+                           fecha_ini: datetime.date, fecha_fin: datetime.date) -> dcc.Graph:
+    df_trades = df_trades.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
     operaciones = []
     aciertos = []
     if estrategia == "Individual":

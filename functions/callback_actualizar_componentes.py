@@ -14,15 +14,16 @@ from utils.utils import diccionario_drop
 from components.component_tabla_gde_instrumentos import returned_tabla_gde_instrumentos
 from components.component_tabla_gde_elegido import returned_tabla_gde_elegido
 
-def reconvirtiendo_dates(datos_serializados: dict, fecha_ini: datetime.date, fecha_fin: datetime.date) -> list:
+
+def reconvirtiendo_datos(datos_serializados: dict) -> list:
     datos = {}
     for key in datos_serializados.keys():
         if key not in datos_serializados["lista_reconvertir_dates"]:
             datos[key] = datos_serializados[key]
             continue
-        
+
         df = pl.DataFrame(datos_serializados[key]).with_columns(pl.col("date").cast(pl.Date))
-        df = df.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+        # df = df.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
         datos[key] = df
     return datos
 
@@ -87,7 +88,7 @@ def actualizar_componentes(store_ready, datos_serializados, fecha_ini_entrada, f
     activado_por_drop = False    
     trigger_id = ctx.triggered_id
     if (trigger_id == "store-drop-value" and drop_value) or (radioitems_value == "opcion_drop" and drop_value):
-        activado_por_drop = True 
+        activado_por_drop = True
 
     disabled_drop_dow = False if radioitems_value == "opcion_drop" else True
     value_drop = drop_value if not es_primera_carga else None
@@ -95,8 +96,8 @@ def actualizar_componentes(store_ready, datos_serializados, fecha_ini_entrada, f
 
     fecha_ini = string_to_date(datos_serializados["fecha_ini"]) if es_primera_carga else string_to_date(fecha_ini_entrada)
     fecha_fin = string_to_date(datos_serializados["fecha_fin"]) if es_primera_carga else string_to_date(fecha_fin_entrada)
-    
-    datos = reconvirtiendo_dates(datos_serializados=datos_serializados, fecha_ini=fecha_ini, fecha_fin=fecha_fin) 
+
+    datos = reconvirtiendo_datos(datos_serializados=datos_serializados)
 
     if estrategia == "Individual":
         back_spx = datos["back_spx_individual"]
@@ -114,38 +115,44 @@ def actualizar_componentes(store_ready, datos_serializados, fecha_ini_entrada, f
         back_btc = datos["back_btc_estricta"]
         back_xau = datos["back_xau_estricta"]
 
+    card_spx = retorna_card(df=back_spx, habiles_anio=252, fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+    card_eur = retorna_card(df=back_eur, habiles_anio=252, fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+    card_btc = retorna_card(df=back_btc, habiles_anio=365, fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+    card_xau = retorna_card(df=back_xau, habiles_anio=252, fecha_ini=fecha_ini, fecha_fin=fecha_fin)
 
-    card_spx = retorna_card(df=back_spx, habiles_anio=252)   
-    card_eur = retorna_card(df=back_eur, habiles_anio=252)   
-    card_btc = retorna_card(df=back_btc, habiles_anio=365)   
-    card_xau = retorna_card(df=back_xau, habiles_anio=252)                                                                            
-    
-    dona_overview = returned_dona_overview(df_spx=back_spx, df_eur=back_eur,
-                                           df_btc=back_btc, df_xau=back_xau)
-        
-    componente_evolucion_patrimonio = returned_evolucion_patrimonio(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc, df_xau=back_xau)
-                                                       
+    dona_overview = returned_dona_overview(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc,
+                                           df_xau=back_xau, fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+
+    componente_evolucion_patrimonio = returned_evolucion_patrimonio(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc,
+                                                                    df_xau=back_xau, fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+
     componente_performance = returned_component_performance(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc,
-                                                            df_xau=back_xau, df_trades=datos["df_trades"], estrategia=estrategia)
-    
-    componente_barras = returned_barras_winrate(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc, df_xau=back_xau)
-    
-    componente_tabla = returned_tablas_trades(df_trades=datos["df_trades"], estrategia=estrategia)
-    
+                                                            df_xau=back_xau, df_trades=datos["df_trades"], estrategia=estrategia,
+                                                            fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+
+    componente_barras = returned_barras_winrate(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc, df_xau=back_xau,
+                                                fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+
+    componente_tabla = returned_tablas_trades(df_trades=datos["df_trades"], estrategia=estrategia, fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+
     componente_evolucion = None
     componente_tabla_gde = None
     if not activado_por_drop:
-        componente_evolucion = returned_evolucion_instrumentos(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc, df_xau=back_xau) 
-        
-        componente_tabla_gde = returned_tabla_gde_instrumentos(df_trades=datos["df_trades"], estrategia=estrategia)
+        componente_evolucion = returned_evolucion_instrumentos(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc,
+                                                               df_xau=back_xau, fecha_ini=fecha_ini, fecha_fin=fecha_fin) 
+
+        componente_tabla_gde = returned_tabla_gde_instrumentos(df_trades=datos["df_trades"], estrategia=estrategia,
+                                                               fecha_ini=fecha_ini, fecha_fin=fecha_fin)
     else:
         componente_evolucion = returned_evolucion_elegido(df_spx=back_spx, df_eur=back_eur, df_btc=back_btc, df_xau=back_xau,
-                                                          df_elegido=datos[diccionario_drop[drop_value]], drop_value=drop_value)
+                                                          df_elegido=datos[diccionario_drop[drop_value]], drop_value=drop_value,
+                                                          fecha_ini=fecha_ini, fecha_fin=fecha_fin)
 
         componente_tabla_gde = returned_tabla_gde_elegido(df_trades=datos["df_trades"], nombre_elegido=drop_value,
-                                                          df_elegido=datos[diccionario_drop[drop_value]], estrategia=estrategia)
-    
+                                                          df_elegido=datos[diccionario_drop[drop_value]], estrategia=estrategia,
+                                                          fecha_ini=fecha_ini, fecha_fin=fecha_fin)
+
     es_primera_carga = False
-    
-    return componente_drop, dona_overview, componente_evolucion_patrimonio, componente_performance, card_spx, card_eur, card_btc, card_xau,\
-           componente_barras, componente_tabla, componente_evolucion, componente_tabla_gde, es_primera_carga, False
+
+    return (componente_drop, dona_overview, componente_evolucion_patrimonio, componente_performance, card_spx, card_eur, card_btc,
+            card_xau, componente_barras, componente_tabla, componente_evolucion, componente_tabla_gde, es_primera_carga, False)

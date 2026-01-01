@@ -1,10 +1,12 @@
 from dash import dcc
 import plotly.graph_objects as go
 import polars as pl
-from functions.backtesting import evolucion
+from datetime import datetime
 from utils.utils import colores_hex
 
-def returned_tabla_gde_instrumentos(df_trades: pl.DataFrame, estrategia: str) -> dcc.Graph:
+def returned_tabla_gde_instrumentos(df_trades: pl.DataFrame, estrategia: str, fecha_ini: datetime.date,
+                                    fecha_fin: datetime.date) -> dcc.Graph:
+    df_trades = df_trades.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
     if estrategia == "Individual":
         df = df_trades.select(["date", "spx_trades", "spx_wins", "eur_trades", "eur_wins", "btc_trades", "btc_wins", "xau_trades", "xau_wins"])
     else:

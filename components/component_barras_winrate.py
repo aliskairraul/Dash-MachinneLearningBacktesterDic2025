@@ -2,9 +2,14 @@ import polars as pl
 from dash import dcc
 import plotly.graph_objects as go
 from utils.utils import colores_hex
+from datetime import datetime
 
-
-def returned_barras_winrate(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame) -> dcc.Graph:
+def returned_barras_winrate(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame,
+                            fecha_ini: datetime.date, fecha_fin: datetime.date) -> dcc.Graph:
+    df_spx = df_spx.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+    df_eur = df_eur.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+    df_btc = df_btc.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+    df_xau = df_xau.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
     rate_spx = round((df_spx["wins_dia"].sum() / df_spx["trades_dia"].sum() * 100), 2) if df_spx["trades_dia"].sum() > 0 else 0
     rate_eur = round((df_eur["wins_dia"].sum() / df_eur["trades_dia"].sum() * 100), 2) if df_eur["trades_dia"].sum() > 0 else 0
     rate_btc = round((df_btc["wins_dia"].sum() / df_btc["trades_dia"].sum() * 100), 2) if df_btc["trades_dia"].sum() > 0 else 0

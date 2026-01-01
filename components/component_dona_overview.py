@@ -1,10 +1,16 @@
 import polars as pl
 from dash import html, dcc
 import plotly.graph_objects as go
+from datetime import datetime
 from utils.utils import colores_hex   # claves del diccionario "eurusd", "btcusd", "xauusd", "spx"
 
 
-def returned_dona_overview(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame) -> dcc.Graph:
+def returned_dona_overview(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame,
+                           df_xau: pl.DataFrame, fecha_ini: datetime.date, fecha_fin: datetime.date) -> dcc.Graph:
+    df_spx = df_spx.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+    df_eur = df_eur.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+    df_btc = df_btc.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
+    df_xau = df_xau.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
     monto_btc = round((df_btc["Monto_fin_dia"][-1]), 2)
     monto_eur = round((df_eur["Monto_fin_dia"][-1]), 2)
     monto_spx = round((df_spx["Monto_fin_dia"][-1]), 2)

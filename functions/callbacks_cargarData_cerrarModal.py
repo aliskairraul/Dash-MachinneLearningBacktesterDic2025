@@ -96,7 +96,8 @@ def cargar_data(n):
                 continue
             datos[key] = backs_especificos[key].to_dicts()
 
-    df_trades = trades(inferencias_btc=inferencias_btc, inferencias_eur=inferencias_eur, inferencias_spx=inferencias_spx, inferencias_xau=inferencias_xau)
+    df_trades = trades(inferencias_btc=inferencias_btc, inferencias_eur=inferencias_eur,
+                       inferencias_spx=inferencias_spx, inferencias_xau=inferencias_xau)
     datos["df_trades"] = df_trades.to_dicts()
 
     lista_keys = list(datos.keys())

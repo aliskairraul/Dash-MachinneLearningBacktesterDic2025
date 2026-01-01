@@ -1,12 +1,15 @@
 import polars as pl 
 from dash import dcc 
 import plotly.graph_objects as go
+from datetime import datetime
 from functions.backtesting import evolucion
 from utils.utils import colores_hex 
 
 
-def returned_evolucion_instrumentos(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame) -> dcc.Graph:
+def returned_evolucion_instrumentos(df_spx: pl.DataFrame, df_eur: pl.DataFrame, df_btc: pl.DataFrame, df_xau: pl.DataFrame,
+                                    fecha_ini: datetime.date, fecha_fin: datetime.date) -> dcc.Graph:
     df = evolucion(df_spx=df_spx, df_eur=df_eur, df_btc=df_btc, df_xau=df_xau)
+    df = df.filter((pl.col("date") >= fecha_ini) & (pl.col("date") <= fecha_fin))
     fig = go.Figure()
 
     # BTCUSD Trace
